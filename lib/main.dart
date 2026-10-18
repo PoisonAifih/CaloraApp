@@ -9,9 +9,8 @@ import 'update/github_update.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final session = SecureSessionStore();
-  final savedUrl = await session.readBaseUrl();
   runApp(CaloraApp(
-    store: CaloraStore(CaloraClient(session: session, baseUrl: savedUrl)),
+    store: CaloraStore(CaloraClient(session: session)),
     updates: GithubUpdateClient(),
   ));
 }
