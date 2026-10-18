@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../api/calora_client.dart';
 import '../api/models.dart';
@@ -30,10 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String _timezone = 'Asia/Bangkok';
   bool _busy = false;
   bool _filled = false;
-  bool _askedTelegram = false;
   String? _error;
-  bool? _telegramConnected;
-  String? _bindHint;
 
   @override
   void didChangeDependencies() {
@@ -42,10 +38,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (profile != null && !_filled) {
       _fill(profile);
       _filled = true;
-    }
-    if (!_askedTelegram) {
-      _askedTelegram = true;
-      _loadTelegram();
     }
   }
 
@@ -65,13 +57,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   String _trim(double value) => value.toStringAsFixed(value == value.roundToDouble() ? 0 : 1);
-
-  Future<void> _loadTelegram() async {
-    try {
-      final status = await CaloraScope.of(context).client.telegramStatus();
-      if (mounted) setState(() => _telegramConnected = status.connected);
-    } catch (_) {}
-  }
 
   @override
   void dispose() {
@@ -126,20 +111,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  Future<void> _connectTelegram() async {
-    try {
-      final link = await CaloraScope.of(context).client.bindToken();
-      if (link.deepLink != null) {
-        final opened = await launchUrl(Uri.parse(link.deepLink!), mode: LaunchMode.externalApplication);
-        if (!opened && mounted) setState(() => _bindHint = link.startPayload);
-      } else if (mounted) {
-        setState(() => _bindHint = link.startPayload);
-      }
-    } on CaloraException catch (error) {
-      if (mounted) setState(() => _error = error.message);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -168,18 +139,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
               const SizedBox(height: 12),
               FilledButton(onPressed: _busy ? null : _save, child: const Text('Save profile')),
-            ],
-          ),
-        ),
-        const SizedBox(height: 12),
-        CaloraCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(_telegramConnected == true ? 'Telegram connected' : 'Telegram not connected', style: const TextStyle(fontWeight: FontWeight.w700)),
-              if (_bindHint != null) Text('Start the bot with $_bindHint', style: const TextStyle(color: CaloraColors.inkMuted)),
-              const SizedBox(height: 8),
-              OutlinedButton(onPressed: _connectTelegram, child: const Text('Connect Telegram')),
             ],
           ),
         ),

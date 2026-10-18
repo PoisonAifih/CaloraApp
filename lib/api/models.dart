@@ -337,35 +337,6 @@ class Analysis {
   }
 }
 
-class TelegramStatus {
-  TelegramStatus({required this.connected, this.telegramUserId});
-
-  final bool connected;
-  final String? telegramUserId;
-
-  factory TelegramStatus.fromJson(Map<String, dynamic> json) {
-    return TelegramStatus(
-      connected: json['connected'] == true,
-      telegramUserId: json['telegramUserId']?.toString(),
-    );
-  }
-}
-
-class BindLink {
-  BindLink({this.deepLink, required this.startPayload});
-
-  final String? deepLink;
-  final String startPayload;
-
-  factory BindLink.fromJson(Map<String, dynamic> json) {
-    final link = json['deepLink'];
-    return BindLink(
-      deepLink: link == null || '$link'.isEmpty ? null : '$link',
-      startPayload: '${json['startPayload'] ?? ''}',
-    );
-  }
-}
-
 Map<String, dynamic> _map(dynamic value) => value is Map<String, dynamic> ? value : <String, dynamic>{};
 
 List<T> _list<T>(dynamic value, T Function(Map<String, dynamic>) parse) {

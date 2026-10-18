@@ -103,16 +103,6 @@ class CaloraClient {
     return Analysis.fromJson(json);
   }
 
-  Future<TelegramStatus> telegramStatus() async {
-    final json = await _json('GET', '/api/telegram/status');
-    return TelegramStatus.fromJson(json);
-  }
-
-  Future<BindLink> bindToken() async {
-    final json = await _json('POST', '/api/telegram/bind-token');
-    return BindLink.fromJson(json);
-  }
-
   Future<Map<String, dynamic>> _json(String method, String path, {Map<String, dynamic>? body}) async {
     final response = await _send(method, path, body: body);
     return _decode(response);
