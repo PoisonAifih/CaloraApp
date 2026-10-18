@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'version.dart';
 
 class GithubUpdateClient {
-  GithubUpdateClient({http.Client? httpClient, this.repo = 'PoisonAifih/CaloraApp'}) : httpClient = httpClient ?? http.Client();
+  GithubUpdateClient({http.Client? httpClient, this.repo = 'PoisonAifih/CaloraApp-releases'}) : httpClient = httpClient ?? http.Client();
 
   final http.Client httpClient;
   final String repo;

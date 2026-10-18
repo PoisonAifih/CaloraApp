@@ -35,5 +35,8 @@ jobs:
       - run: flutter build apk --release --build-name=1.0.${{ steps.version.outputs.build }} --build-number=${{ steps.version.outputs.build }} --dart-define=API_BASE_URL=https://vpnbox.tail96a6cf.ts.net
       - uses: softprops/action-gh-release@v2
         with:
+          repository: PoisonAifih/CaloraApp-releases
+          token: ${{ secrets.RELEASES_TOKEN }}
+          target_commitish: main
           tag_name: v1.0.${{ steps.version.outputs.build }}+${{ steps.version.outputs.build }}
           files: build/app/outputs/flutter-apk/app-release.apk
