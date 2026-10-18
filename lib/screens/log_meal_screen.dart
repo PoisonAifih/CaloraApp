@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import '../api/calora_client.dart';
 import '../api/models.dart';
 import '../app.dart';
+import '../theme/calora_theme.dart';
 
 class LogMealScreen extends StatefulWidget {
   const LogMealScreen({this.manual = false, super.key});
@@ -105,7 +106,7 @@ class _LogMealScreenState extends State<LogMealScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Log a meal'), backgroundColor: Colors.transparent, foregroundColor: const Color(0xFF3A2A1A)),
+      appBar: AppBar(title: const Text('LOG A MEAL')),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
         children: [
@@ -121,7 +122,7 @@ class _LogMealScreenState extends State<LogMealScreen> {
           ],
           if (_busy) const LinearProgressIndicator(),
           if (_summary != null && _summary!.isNotEmpty) ...[
-            Text(_summary!, style: const TextStyle(color: Color(0xFF6B5344))),
+            Text(_summary!, style: const TextStyle(color: CaloraColors.inkMuted)),
             const SizedBox(height: 12),
           ],
           TextField(controller: _name, decoration: const InputDecoration(labelText: 'Meal')),
@@ -147,7 +148,7 @@ class _LogMealScreenState extends State<LogMealScreen> {
           _number(_fat, 'Fat g'),
           if (_error != null) ...[
             const SizedBox(height: 12),
-            Text(_error!, style: const TextStyle(color: Color(0xFFE24B32))),
+            Text(_error!, style: const TextStyle(color: CaloraColors.danger)),
           ],
           const SizedBox(height: 16),
           FilledButton(onPressed: _busy ? null : _save, child: const Text('Save meal')),

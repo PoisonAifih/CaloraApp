@@ -42,17 +42,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: widget.onProfile,
                 customBorder: const CircleBorder(),
                 child: CircleAvatar(
-                  backgroundColor: CaloraColors.ink,
-                  foregroundColor: CaloraColors.navInk,
+                  backgroundColor: CaloraColors.forest,
+                  foregroundColor: CaloraColors.cream,
                   child: Text(initial, style: const TextStyle(fontWeight: FontWeight.w700)),
                 ),
               ),
               const SizedBox(width: 12),
-              Text(store.user?.name ?? 'Calora', style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800)),
+              Text((store.user?.name ?? 'Calora').toUpperCase(), style: CaloraText.title),
             ],
           ),
           const SizedBox(height: 20),
-          const Text('In focus', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
+          const Text('IN FOCUS', style: CaloraText.section),
           const SizedBox(height: 12),
           if (dash == null)
             const CaloraCard(child: Text('Pull to load today.'))
@@ -79,14 +79,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 8,
                   margin: const EdgeInsets.symmetric(horizontal: 3),
                   decoration: BoxDecoration(
-                    color: active ? CaloraColors.ink : CaloraColors.ink.withValues(alpha: 0.35),
+                    color: active ? CaloraColors.carrot : CaloraColors.cream,
                     borderRadius: BorderRadius.circular(8),
                   ),
                 );
               }),
             ),
             const SizedBox(height: 22),
-            const Text('At a glance', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
+            const Text('AT A GLANCE', style: CaloraText.section),
             const SizedBox(height: 12),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -115,8 +115,8 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('Today', style: TextStyle(color: CaloraColors.inkMuted, fontWeight: FontWeight.w700)),
-                Text(roundNum(dash.remainingKcal), style: const TextStyle(fontSize: 56, fontWeight: FontWeight.w800, height: 1)),
+                const Text('TODAY', style: CaloraText.micro),
+                Text(roundNum(dash.remainingKcal), style: CaloraText.stat(56)),
                 const Text('kcal left', style: TextStyle(color: CaloraColors.inkMuted)),
                 const SizedBox(height: 8),
                 Text('${roundNum(dash.consumedKcal)} eaten of ${roundNum(dash.targetKcal)}', style: const TextStyle(color: CaloraColors.inkMuted)),
@@ -132,19 +132,20 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _tonight(dynamic dash) {
     final meal = dash.tonight;
     return CaloraCard(
+      dark: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text('Tonight', style: TextStyle(color: CaloraColors.inkMuted, fontWeight: FontWeight.w700)),
+          const Text('TONIGHT', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, letterSpacing: 0.4)),
           const SizedBox(height: 8),
           if (meal == null)
-            const Text('Log a meal to get a suggestion.', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700))
+            const Text('LOG A MEAL TO GET A SUGGESTION', style: TextStyle(fontFamily: CaloraText.display, fontSize: 24, fontWeight: FontWeight.w700, color: CaloraColors.canvas))
           else ...[
-            Text(meal.name, style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w800)),
+            Text(meal.name.toUpperCase(), style: const TextStyle(fontFamily: CaloraText.display, fontSize: 26, fontWeight: FontWeight.w700, color: CaloraColors.canvas)),
             const SizedBox(height: 8),
-            Text('${roundNum(meal.kcal)} kcal', style: const TextStyle(fontSize: 20)),
-            Text('P ${roundNum(meal.protein)} g   C ${roundNum(meal.carbs)} g   F ${roundNum(meal.fat)} g', style: const TextStyle(color: CaloraColors.inkMuted)),
+            Text('${roundNum(meal.kcal)} kcal', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+            Text('P ${roundNum(meal.protein)} g   C ${roundNum(meal.carbs)} g   F ${roundNum(meal.fat)} g'),
           ],
         ],
       ),
@@ -158,8 +159,8 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text('Tomorrow', style: TextStyle(color: CaloraColors.inkMuted, fontWeight: FontWeight.w700)),
-          Text(roundNum(dash.effectiveDailyTarget), style: const TextStyle(fontSize: 48, fontWeight: FontWeight.w800, height: 1.05)),
+          const Text('TOMORROW', style: CaloraText.micro),
+          Text(roundNum(dash.effectiveDailyTarget), style: CaloraText.stat(48)),
           const Text('kcal target', style: TextStyle(color: CaloraColors.inkMuted)),
           const SizedBox(height: 8),
           Text(lunch == null ? 'Kitchen lunch not assigned yet.' : lunch.name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
@@ -175,9 +176,9 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: const TextStyle(color: CaloraColors.inkMuted, fontWeight: FontWeight.w700)),
+          Text(title.toUpperCase(), style: CaloraText.micro),
           const SizedBox(height: 8),
-          Text(headline, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+          Text(headline, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: CaloraColors.heading)),
           const SizedBox(height: 6),
           Text(line),
           Text(detail, style: const TextStyle(color: CaloraColors.inkMuted)),

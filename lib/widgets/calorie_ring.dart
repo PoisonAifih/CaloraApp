@@ -31,17 +31,18 @@ class _RingPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2 - 6;
     final track = Paint()
-      ..color = CaloraColors.ink.withValues(alpha: 0.12)
+      ..color = CaloraColors.cream
       ..style = PaintingStyle.stroke
       ..strokeWidth = 8
       ..strokeCap = StrokeCap.round;
+    final ratio = target <= 0 ? 0.0 : consumed / target;
     final progress = Paint()
-      ..color = CaloraColors.accent
+      ..color = ratio > 1 ? CaloraColors.tomato : ratio >= 0.9 ? CaloraColors.forest : CaloraColors.carrot
       ..style = PaintingStyle.stroke
       ..strokeWidth = 8
       ..strokeCap = StrokeCap.round;
     canvas.drawCircle(center, radius, track);
-    final fraction = target <= 0 ? 0.0 : (consumed / target).clamp(0.0, 1.0);
+    final fraction = ratio.clamp(0.0, 1.0);
     canvas.drawArc(Rect.fromCircle(center: center, radius: radius), -math.pi / 2, fraction * math.pi * 2, false, progress);
   }
 

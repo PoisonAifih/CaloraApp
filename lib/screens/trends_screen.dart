@@ -57,7 +57,7 @@ class _TrendsScreenState extends State<TrendsScreen> {
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
         children: [
-          const Text('Trends', style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800)),
+          const Text('TRENDS', style: CaloraText.title),
           const SizedBox(height: 12),
           CaloraCard(
             child: Column(
@@ -78,7 +78,7 @@ class _TrendsScreenState extends State<TrendsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(trend == null ? 'Not enough weigh-ins for a trend' : '${trend > 0 ? '+' : ''}${trend.toStringAsFixed(2)} kg / week', style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800)),
+                Text(trend == null ? 'Not enough weigh-ins for a trend' : '${trend > 0 ? '+' : ''}${trend.toStringAsFixed(2)} kg / week', style: trend == null ? const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: CaloraColors.heading) : CaloraText.stat(26)),
                 const SizedBox(height: 8),
                 WeightChart(weights: weights),
                 Text('Average ${roundNum(dash?.averageCalories ?? 0)} kcal · protein ${roundNum(dash?.averageProtein ?? 0)} g'),

@@ -49,7 +49,7 @@ class _ShellScreenState extends State<ShellScreen> {
               bottom: 0,
               height: 68,
               child: ColoredBox(
-                color: CaloraColors.ink,
+                color: CaloraColors.nav,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [

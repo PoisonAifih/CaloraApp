@@ -116,7 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
       children: [
-        const Text('Profile', style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800)),
+        const Text('PROFILE', style: CaloraText.title),
         const SizedBox(height: 12),
         CaloraCard(
           child: Column(
@@ -135,7 +135,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               TextField(controller: _disliked, decoration: const InputDecoration(labelText: 'Disliked foods')),
               if (_error != null) ...[
                 const SizedBox(height: 12),
-                Text(_error!, style: const TextStyle(color: CaloraColors.accent)),
+                Text(_error!, style: const TextStyle(color: CaloraColors.danger)),
               ],
               const SizedBox(height: 12),
               FilledButton(onPressed: _busy ? null : _save, child: const Text('Save profile')),

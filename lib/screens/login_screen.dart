@@ -53,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Text('Calora', style: TextStyle(fontSize: 36, fontWeight: FontWeight.w800, color: CaloraColors.ink)),
+                    const Text('CALORA', style: CaloraText.title),
                     const SizedBox(height: 8),
                     const Text('Sign in to log meals, workouts, and weight.', style: TextStyle(color: CaloraColors.inkMuted)),
                     const SizedBox(height: 20),
@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     if (_error != null) ...[
                       const SizedBox(height: 12),
-                      Text(_error!, style: const TextStyle(color: CaloraColors.accent)),
+                      Text(_error!, style: const TextStyle(color: CaloraColors.danger)),
                     ],
                     const SizedBox(height: 16),
                     FilledButton(onPressed: _busy ? null : _submit, child: Text(_busy ? 'Signing in' : 'Sign in')),

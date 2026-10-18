@@ -22,7 +22,7 @@ class FoodScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Expanded(child: Text('Food', style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800))),
+              const Expanded(child: Text('FOOD', style: CaloraText.title)),
               TextButton(
                 onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const LogMealScreen(manual: true))),
                 child: const Text('Enter manually'),
@@ -49,7 +49,7 @@ class FoodScreen extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () => _delete(context, food.id),
-                    icon: const Icon(Icons.delete_outline, color: CaloraColors.accent),
+                    icon: const Icon(Icons.delete_outline, color: CaloraColors.danger),
                   ),
                 ],
               ),
