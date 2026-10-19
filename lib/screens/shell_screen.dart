@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/calora_theme.dart';
+import 'catering_screen.dart';
 import 'food_screen.dart';
 import 'home_screen.dart';
 import 'log_meal_screen.dart';
@@ -29,7 +30,8 @@ class _ShellScreenState extends State<ShellScreen> {
         child: IndexedStack(
           index: _index,
           children: [
-            HomeScreen(onProfile: () => setState(() => _index = 4)),
+            HomeScreen(onProfile: () => setState(() => _index = 5)),
+            const CateringScreen(),
             const FoodScreen(),
             const WorkoutScreen(),
             const TrendsScreen(),
@@ -54,10 +56,11 @@ class _ShellScreenState extends State<ShellScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     _tab(0, Icons.home, 'Home'),
-                    _tab(1, Icons.restaurant, 'Food'),
-                    _tab(2, Icons.fitness_center, 'Workout'),
-                    _tab(3, Icons.show_chart, 'Trends'),
-                    _tab(4, Icons.person, 'Profile'),
+                    _tab(1, Icons.restaurant, 'Catering'),
+                    _tab(2, Icons.rice_bowl, 'Food'),
+                    _tab(3, Icons.fitness_center, 'Workout'),
+                    _tab(4, Icons.show_chart, 'Trends'),
+                    _tab(5, Icons.person, 'Profile'),
                   ],
                 ),
               ),
