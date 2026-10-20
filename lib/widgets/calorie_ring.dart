@@ -34,6 +34,7 @@ class _RingPainter extends CustomPainter {
   final double consumed;
   final double target;
   final double stroke;
+  final bool dark = CaloraColors.dark;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -46,7 +47,7 @@ class _RingPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
     final ratio = target <= 0 ? 0.0 : consumed / target;
     final progress = Paint()
-      ..color = ratio > 1 ? CaloraColors.tomato : CaloraColors.forest
+      ..color = ratio > 1 ? CaloraColors.tomato : CaloraColors.heading
       ..style = PaintingStyle.stroke
       ..strokeWidth = stroke
       ..strokeCap = StrokeCap.round;
@@ -57,6 +58,6 @@ class _RingPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _RingPainter oldDelegate) {
-    return oldDelegate.consumed != consumed || oldDelegate.target != target || oldDelegate.stroke != stroke;
+    return oldDelegate.consumed != consumed || oldDelegate.target != target || oldDelegate.stroke != stroke || oldDelegate.dark != dark;
   }
 }

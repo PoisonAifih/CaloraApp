@@ -22,7 +22,7 @@ class FoodScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Expanded(child: Text('FOOD', style: CaloraText.title)),
+              Expanded(child: Text('FOOD', style: CaloraText.title)),
               TextButton(
                 onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const LogMealScreen(manual: true))),
                 child: const Text('Enter manually'),
@@ -41,7 +41,7 @@ class FoodScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(food.meal, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
-                        Text('${food.category} · ${formatWhen(food.createdAt)}', style: const TextStyle(color: CaloraColors.inkMuted)),
+                        Text('${food.category} · ${formatWhen(food.createdAt)}', style: TextStyle(color: CaloraColors.inkMuted)),
                         const SizedBox(height: 4),
                         Text('${roundNum(food.kcal)} kcal   P ${roundNum(food.protein)}   C ${roundNum(food.carbs)}   F ${roundNum(food.fat)}'),
                       ],
@@ -49,7 +49,7 @@ class FoodScreen extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () => _delete(context, food.id),
-                    icon: const Icon(Icons.delete_outline, color: CaloraColors.danger),
+                    icon: Icon(Icons.delete_outline, color: CaloraColors.danger),
                   ),
                 ],
               ),

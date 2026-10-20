@@ -57,7 +57,7 @@ class _TrendsScreenState extends State<TrendsScreen> {
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
         children: [
-          const Text('TRENDS', style: CaloraText.title),
+          Text('TRENDS', style: CaloraText.title),
           const SizedBox(height: 12),
           CaloraCard(
             child: Column(
@@ -78,13 +78,13 @@ class _TrendsScreenState extends State<TrendsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(trend == null ? 'Not enough weigh-ins for a trend' : '${trend > 0 ? '+' : ''}${trend.toStringAsFixed(2)} kg / week', style: trend == null ? const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: CaloraColors.heading) : CaloraText.stat(26)),
+                Text(trend == null ? 'Not enough weigh-ins for a trend' : '${trend > 0 ? '+' : ''}${trend.toStringAsFixed(2)} kg / week', style: trend == null ? TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: CaloraColors.heading) : CaloraText.stat(26)),
                 const SizedBox(height: 8),
                 WeightChart(weights: weights),
                 Text('Average ${roundNum(dash?.averageCalories ?? 0)} kcal · protein ${roundNum(dash?.averageProtein ?? 0)} g'),
                 Text('Logged ${dash?.daysLogged ?? 0} of ${dash?.windowDays ?? 7} days · confidence ${dash?.confidence ?? 'LOW'}'),
-                Text('Activity energy ${roundNum(dash?.activityEnergyAverage ?? 0)} kcal/day', style: const TextStyle(color: CaloraColors.inkMuted)),
-                Text('Logging completeness ${(((dash?.loggingCompleteness ?? 0) * 100).round())}%', style: const TextStyle(color: CaloraColors.inkMuted)),
+                Text('Activity energy ${roundNum(dash?.activityEnergyAverage ?? 0)} kcal/day', style: TextStyle(color: CaloraColors.inkMuted)),
+                Text('Logging completeness ${(((dash?.loggingCompleteness ?? 0) * 100).round())}%', style: TextStyle(color: CaloraColors.inkMuted)),
               ],
             ),
           ),

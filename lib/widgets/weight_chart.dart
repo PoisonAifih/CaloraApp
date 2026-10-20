@@ -22,6 +22,7 @@ class _WeightPainter extends CustomPainter {
   _WeightPainter(this.weights);
 
   final List<WeightEntry> weights;
+  final bool dark = CaloraColors.dark;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -52,5 +53,5 @@ class _WeightPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _WeightPainter oldDelegate) => oldDelegate.weights != weights;
+  bool shouldRepaint(covariant _WeightPainter oldDelegate) => oldDelegate.weights != weights || oldDelegate.dark != dark;
 }

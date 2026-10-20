@@ -19,11 +19,11 @@ class CaloraCard extends StatelessWidget {
         color: dark ? CaloraColors.forest : CaloraColors.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: dark ? CaloraColors.forest : CaloraColors.cream),
-        boxShadow: const [caloraShadow],
+        boxShadow: [caloraShadow],
       ),
       child: child,
     );
     if (!dark) return card;
-    return DefaultTextStyle.merge(style: const TextStyle(color: CaloraColors.cream), child: card);
+    return DefaultTextStyle.merge(style: TextStyle(color: CaloraColors.onForest), child: card);
   }
 }

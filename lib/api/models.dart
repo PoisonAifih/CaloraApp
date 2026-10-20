@@ -205,6 +205,31 @@ class KitchenLunch {
   }
 }
 
+/// An active kitchen menu from the catering catalog.
+class CateringMenu {
+  CateringMenu({required this.id, required this.name, required this.mealType, required this.calories, required this.proteinG, required this.carbsG, required this.fatG});
+
+  final String id;
+  final String name;
+  final String mealType;
+  final double calories;
+  final double proteinG;
+  final double carbsG;
+  final double fatG;
+
+  factory CateringMenu.fromJson(Map<String, dynamic> json) {
+    return CateringMenu(
+      id: '${json['id']}',
+      name: '${json['name'] ?? ''}',
+      mealType: '${json['mealType'] ?? 'LUNCH'}',
+      calories: asDouble(json['calories']),
+      proteinG: asDouble(json['proteinG']),
+      carbsG: asDouble(json['carbsG']),
+      fatG: asDouble(json['fatG']),
+    );
+  }
+}
+
 class Dashboard {
   Dashboard({
     required this.remainingKcal,

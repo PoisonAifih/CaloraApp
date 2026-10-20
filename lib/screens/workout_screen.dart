@@ -101,13 +101,13 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
         children: [
-          const Text('WORKOUT', style: CaloraText.title),
+          Text('WORKOUT', style: CaloraText.title),
           const SizedBox(height: 12),
           CaloraCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text('SESSION', style: CaloraText.section),
+                Text('SESSION', style: CaloraText.section),
                 const SizedBox(height: 8),
                 TextField(controller: _minutes, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'Minutes')),
                 const SizedBox(height: 12),
@@ -120,7 +120,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text('EXERCISE', style: CaloraText.section),
+                Text('EXERCISE', style: CaloraText.section),
                 const SizedBox(height: 8),
                 TextField(controller: _exercise, decoration: const InputDecoration(labelText: 'Name')),
                 const SizedBox(height: 12),
@@ -148,12 +148,12 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                             formatWhen(activity.startedAt),
                             if (activity.durationSeconds != null) '${(activity.durationSeconds! / 60).round()} min',
                           ].join(' · '),
-                          style: const TextStyle(color: CaloraColors.inkMuted),
+                          style: TextStyle(color: CaloraColors.inkMuted),
                         ),
                       ],
                     ),
                   ),
-                  IconButton(onPressed: () => _delete(activity.id), icon: const Icon(Icons.delete_outline, color: CaloraColors.danger)),
+                  IconButton(onPressed: () => _delete(activity.id), icon: Icon(Icons.delete_outline, color: CaloraColors.danger)),
                 ],
               ),
             ),

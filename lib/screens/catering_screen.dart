@@ -48,6 +48,18 @@ class _CateringScreenState extends State<CateringScreen> {
   String _topupId = 't60';
   int _weeks = 1;
 
+  bool _requestedMenus = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final store = CaloraScope.of(context);
+    if (!_requestedMenus && store.menus == null) {
+      _requestedMenus = true;
+      store.loadMenus();
+    }
+  }
+
   int get _balance => CaloraScope.of(context).tokenBalance;
 
   _Pack get _pack => _packs.firstWhere((item) => item.id == _packageId);
@@ -101,9 +113,9 @@ class _CateringScreenState extends State<CateringScreen> {
                     trailing: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        if (item.list != null) Text(_rp(item.list!), style: const TextStyle(decoration: TextDecoration.lineThrough, color: CaloraColors.inkMuted, fontSize: 12)),
+                        if (item.list != null) Text(_rp(item.list!), style: TextStyle(decoration: TextDecoration.lineThrough, color: CaloraColors.inkMuted, fontSize: 12)),
                         Text(_rp(item.total), style: const TextStyle(fontWeight: FontWeight.w700)),
-                        if (item.save != null) Text('Hemat ${_rp(item.save!)}', style: const TextStyle(color: CaloraColors.kiwi, fontSize: 12, fontWeight: FontWeight.w600)),
+                        if (item.save != null) Text('Hemat ${_rp(item.save!)}', style: TextStyle(color: CaloraColors.kiwi, fontSize: 12, fontWeight: FontWeight.w600)),
                       ],
                     ),
                   ),
@@ -140,7 +152,7 @@ class _CateringScreenState extends State<CateringScreen> {
               title: 'TUKARKAN TOKEN',
               copy: 'Masa aktif saat ini sampai ${_date(_endsAt)}.',
               children: [
-                const Text('PAKET', style: CaloraText.micro),
+                Text('PAKET', style: CaloraText.micro),
                 const SizedBox(height: 8),
                 for (final item in _packs)
                   _choice(
@@ -154,7 +166,7 @@ class _CateringScreenState extends State<CateringScreen> {
                     trailing: Text('${item.weekly} Token/mgg', style: const TextStyle(fontWeight: FontWeight.w700)),
                   ),
                 const SizedBox(height: 6),
-                const Text('DURASI', style: CaloraText.micro),
+                Text('DURASI', style: CaloraText.micro),
                 const SizedBox(height: 8),
                 for (final weeks in [1, 2, 4])
                   _choice(
@@ -179,7 +191,7 @@ class _CateringScreenState extends State<CateringScreen> {
                   margin: const EdgeInsets.only(top: 10),
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(color: CaloraColors.cream, borderRadius: BorderRadius.circular(16)),
-                  child: const Row(
+                  child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Icon(Icons.location_on, color: CaloraColors.carrot, size: 20),
@@ -223,9 +235,9 @@ class _CateringScreenState extends State<CateringScreen> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 120),
       children: [
-        const Text('CATERING', style: CaloraText.title),
+        Text('CATERING', style: CaloraText.title),
         const SizedBox(height: 4),
-        const Text('Tukar token dengan paket menu mingguan', style: TextStyle(color: CaloraColors.inkMuted)),
+        Text('Tukar token dengan paket menu mingguan', style: TextStyle(color: CaloraColors.inkMuted)),
         const SizedBox(height: 16),
         _darkCard(
           child: Row(
@@ -243,17 +255,17 @@ class _CateringScreenState extends State<CateringScreen> {
                           width: 28,
                           height: 28,
                           alignment: Alignment.center,
-                          decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: CaloraColors.cream)),
+                          decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: CaloraColors.onForest)),
                           child: const Text('T', style: TextStyle(fontFamily: CaloraText.display, fontWeight: FontWeight.w700)),
                         ),
                         const SizedBox(width: 8),
-                        Text('$_balance', style: CaloraText.stat(44).copyWith(color: CaloraColors.cream)),
+                        Text('$_balance', style: CaloraText.stat(44).copyWith(color: CaloraColors.onForest)),
                         const SizedBox(width: 6),
                         const Text('Token', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                       ],
                     ),
                     const SizedBox(height: 4),
-                    Text('Paket 7 hari mulai 40 Token', style: TextStyle(color: CaloraColors.cream.withValues(alpha: 0.8), fontSize: 13)),
+                    Text('Paket 7 hari mulai 40 Token', style: TextStyle(color: CaloraColors.onForest.withValues(alpha: 0.8), fontSize: 13)),
                   ],
                 ),
               ),
@@ -268,14 +280,14 @@ class _CateringScreenState extends State<CateringScreen> {
             children: [
               Row(
                 children: [
-                  Container(width: 8, height: 8, decoration: const BoxDecoration(color: CaloraColors.kiwi, shape: BoxShape.circle)),
+                  Container(width: 8, height: 8, decoration: BoxDecoration(color: CaloraColors.kiwi, shape: BoxShape.circle)),
                   const SizedBox(width: 8),
                   Text(left > 0 ? 'LANGGANAN AKTIF' : 'LANGGANAN BERAKHIR', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 0.8)),
                 ],
               ),
               const SizedBox(height: 14),
               const Text('Berakhir pada', style: TextStyle(fontSize: 13)),
-              Text(_date(_endsAt).toUpperCase(), style: CaloraText.stat(32).copyWith(color: CaloraColors.cream)),
+              Text(_date(_endsAt).toUpperCase(), style: CaloraText.stat(32).copyWith(color: CaloraColors.onForest)),
               const SizedBox(height: 12),
               Wrap(
                 spacing: 8,
@@ -291,7 +303,7 @@ class _CateringScreenState extends State<CateringScreen> {
           ),
         ),
         const SizedBox(height: 18),
-        const Text('KATALOG PAKET 7 HARI', style: CaloraText.section),
+        Text('KATALOG PAKET 7 HARI', style: CaloraText.section),
         const SizedBox(height: 10),
         Row(
           children: [
@@ -309,11 +321,11 @@ class _CateringScreenState extends State<CateringScreen> {
                     ),
                     child: Column(
                       children: [
-                        Text(item.name.toUpperCase(), textAlign: TextAlign.center, style: TextStyle(fontFamily: CaloraText.display, fontWeight: FontWeight.w700, color: item.id == _packageId ? CaloraColors.cream : CaloraColors.heading)),
+                        Text(item.name.toUpperCase(), textAlign: TextAlign.center, style: TextStyle(fontFamily: CaloraText.display, fontWeight: FontWeight.w700, color: item.id == _packageId ? CaloraColors.onForest : CaloraColors.heading)),
                         const SizedBox(height: 4),
-                        Text(item.title, textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: item.id == _packageId ? CaloraColors.cream : CaloraColors.inkMuted)),
+                        Text(item.title, textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: item.id == _packageId ? CaloraColors.onForest : CaloraColors.inkMuted)),
                         const SizedBox(height: 6),
-                        Text('${item.weekly} Token', style: TextStyle(fontWeight: FontWeight.w700, color: item.id == _packageId ? CaloraColors.cream : CaloraColors.ink)),
+                        Text('${item.weekly} Token', style: TextStyle(fontWeight: FontWeight.w700, color: item.id == _packageId ? CaloraColors.onForest : CaloraColors.ink)),
                       ],
                     ),
                   ),
@@ -323,7 +335,67 @@ class _CateringScreenState extends State<CateringScreen> {
             ],
           ],
         ),
+        const SizedBox(height: 22),
+        Text('MENU YANG TERSEDIA', style: CaloraText.section),
+        const SizedBox(height: 10),
+        ..._menuList(),
       ],
+    );
+  }
+
+  List<Widget> _menuList() {
+    final menus = CaloraScope.of(context).menus;
+    if (menus == null) return [Text('Memuat menu…', style: TextStyle(color: CaloraColors.inkMuted))];
+    if (menus.isEmpty) return [Text('Belum ada menu aktif.', style: TextStyle(color: CaloraColors.inkMuted))];
+    const mealLabels = {'BREAKFAST': 'SARAPAN', 'LUNCH': 'MAKAN SIANG', 'DINNER': 'MAKAN MALAM', 'SNACK': 'CAMILAN'};
+    return [
+      for (final menu in menus)
+        Container(
+          width: double.infinity,
+          margin: const EdgeInsets.only(bottom: 10),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: CaloraColors.canvas,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: CaloraColors.cream),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      mealLabels[menu.mealType] ?? menu.mealType,
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.8, color: CaloraColors.heading),
+                    ),
+                  ),
+                  Text('${menu.calories.round()} kcal', style: TextStyle(fontSize: 12, color: CaloraColors.inkMuted)),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Text(menu.name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+              const SizedBox(height: 10),
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  _macroChip('Protein ${menu.proteinG.round()}g'),
+                  _macroChip('Karbo ${menu.carbsG.round()}g'),
+                  _macroChip('Lemak ${menu.fatG.round()}g'),
+                ],
+              ),
+            ],
+          ),
+        ),
+    ];
+  }
+
+  Widget _macroChip(String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(color: CaloraColors.cream, borderRadius: BorderRadius.circular(8)),
+      child: Text(text, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: CaloraColors.heading)),
     );
   }
 
@@ -331,8 +403,8 @@ class _CateringScreenState extends State<CateringScreen> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(color: CaloraColors.forest, borderRadius: BorderRadius.circular(16), boxShadow: const [caloraShadow]),
-      child: DefaultTextStyle.merge(style: const TextStyle(color: CaloraColors.cream), child: child),
+      decoration: BoxDecoration(color: CaloraColors.forest, borderRadius: BorderRadius.circular(16), boxShadow: [caloraShadow]),
+      child: DefaultTextStyle.merge(style: TextStyle(color: CaloraColors.onForest), child: child),
     );
   }
 
@@ -356,7 +428,7 @@ Widget _sheet({required String title, required String copy, required List<Widget
           const SizedBox(height: 14),
           Text(title, style: CaloraText.title.copyWith(fontSize: 28)),
           const SizedBox(height: 6),
-          Text(copy, style: const TextStyle(color: CaloraColors.inkMuted, fontSize: 13)),
+          Text(copy, style: TextStyle(color: CaloraColors.inkMuted, fontSize: 13)),
           const SizedBox(height: 14),
           ...children,
         ],
@@ -401,21 +473,21 @@ Widget _choice({
                       color: selected ? CaloraColors.forest : Colors.transparent,
                       border: Border.all(color: selected ? CaloraColors.forest : CaloraColors.mutedGreen),
                     ),
-                    child: selected ? const Icon(Icons.check, size: 14, color: CaloraColors.cream) : null,
+                    child: selected ? Icon(Icons.check, size: 14, color: CaloraColors.onForest) : null,
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(title.toUpperCase(), style: const TextStyle(fontFamily: CaloraText.display, fontWeight: FontWeight.w700, fontSize: 16, color: CaloraColors.heading)),
-                        if (subtitle != null) Text(subtitle, style: const TextStyle(color: CaloraColors.inkMuted, fontSize: 12)),
+                        Text(title.toUpperCase(), style: TextStyle(fontFamily: CaloraText.display, fontWeight: FontWeight.w700, fontSize: 16, color: CaloraColors.heading)),
+                        if (subtitle != null) Text(subtitle, style: TextStyle(color: CaloraColors.inkMuted, fontSize: 12)),
                         if (badge != null)
                           Container(
                             margin: const EdgeInsets.only(top: 6),
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(color: badgeHot ? CaloraColors.carrot : CaloraColors.sunshine, borderRadius: BorderRadius.circular(8)),
-                            child: Text(badge, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: badgeHot ? Colors.white : CaloraColors.charcoal)),
+                            child: Text(badge, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: badgeHot ? Colors.white : const Color(0xFF1C1E1B))),
                           ),
                       ],
                     ),
@@ -427,7 +499,7 @@ Widget _choice({
           ),
         ),
         if (best)
-          const Positioned(
+          Positioned(
             top: -8,
             right: 12,
             child: DecoratedBox(
@@ -462,7 +534,7 @@ Widget _info(String text) {
     margin: const EdgeInsets.only(top: 8),
     padding: const EdgeInsets.all(14),
     decoration: BoxDecoration(color: CaloraColors.cream, borderRadius: BorderRadius.circular(16)),
-    child: Text(text, style: const TextStyle(color: CaloraColors.inkMuted, fontSize: 13)),
+    child: Text(text, style: TextStyle(color: CaloraColors.inkMuted, fontSize: 13)),
   );
 }
 

@@ -89,7 +89,7 @@ Future<void> _downloadAndInstall(BuildContext context, GithubUpdateClient client
   showDialog<void>(
     context: context,
     barrierDismissible: false,
-    builder: (context) => const AlertDialog(
+    builder: (context) => AlertDialog(
       content: Row(
         children: [
           CircularProgressIndicator(color: CaloraColors.accent),

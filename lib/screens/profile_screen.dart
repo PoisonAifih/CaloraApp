@@ -60,9 +60,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _link(IconData icon, String label, Widget screen) {
     return ListTile(
-      leading: Icon(icon, color: CaloraColors.forest),
+      leading: Icon(icon, color: CaloraColors.heading),
       title: Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
-      trailing: const Icon(Icons.chevron_right, color: CaloraColors.inkMuted),
+      trailing: Icon(Icons.chevron_right, color: CaloraColors.inkMuted),
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => Scaffold(appBar: AppBar(), body: SafeArea(top: false, child: screen))),
       ),
@@ -129,7 +129,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
       children: [
-        const Text('OTHER', style: CaloraText.title),
+        Text('OTHER', style: CaloraText.title),
         const SizedBox(height: 12),
         CaloraCard(
           padding: EdgeInsets.zero,
@@ -138,14 +138,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Column(
               children: [
                 _link(Icons.rice_bowl_outlined, 'Food log', const FoodScreen()),
-                const Divider(height: 1, color: CaloraColors.cream),
+                Divider(height: 1, color: CaloraColors.cream),
                 _link(Icons.show_chart, 'Trends', const TrendsScreen()),
               ],
             ),
           ),
         ),
         const SizedBox(height: 18),
-        const Text('PROFILE', style: CaloraText.section),
+        Text('TAMPILAN', style: CaloraText.section),
+        const SizedBox(height: 12),
+        SegmentedButton<ThemeMode>(
+          showSelectedIcon: false,
+          segments: const [
+            ButtonSegment(value: ThemeMode.system, label: Text('Sistem'), icon: Icon(Icons.brightness_auto_outlined)),
+            ButtonSegment(value: ThemeMode.light, label: Text('Terang'), icon: Icon(Icons.light_mode_outlined)),
+            ButtonSegment(value: ThemeMode.dark, label: Text('Gelap'), icon: Icon(Icons.dark_mode_outlined)),
+          ],
+          selected: {CaloraScope.of(context).themeMode},
+          onSelectionChanged: (selection) => CaloraScope.of(context).setThemeMode(selection.first),
+          style: SegmentedButton.styleFrom(
+            selectedBackgroundColor: CaloraColors.forest,
+            selectedForegroundColor: CaloraColors.onForest,
+            foregroundColor: CaloraColors.ink,
+            side: BorderSide(color: CaloraColors.sand),
+          ),
+        ),
+        const SizedBox(height: 18),
+        Text('PROFILE', style: CaloraText.section),
         const SizedBox(height: 12),
         CaloraCard(
           child: Column(
@@ -164,7 +183,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               TextField(controller: _disliked, decoration: const InputDecoration(labelText: 'Disliked foods')),
               if (_error != null) ...[
                 const SizedBox(height: 12),
-                Text(_error!, style: const TextStyle(color: CaloraColors.danger)),
+                Text(_error!, style: TextStyle(color: CaloraColors.danger)),
               ],
               const SizedBox(height: 12),
               FilledButton(onPressed: _busy ? null : _save, child: const Text('Save profile')),

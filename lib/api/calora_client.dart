@@ -57,6 +57,12 @@ class CaloraClient {
     return Dashboard.fromJson(json);
   }
 
+  Future<List<CateringMenu>> menus() async {
+    final decoded = await _decodeAny(await _send('GET', '/api/menus'));
+    if (decoded is! List) throw CaloraException(500, 'Unexpected response');
+    return decoded.whereType<Map<String, dynamic>>().map(CateringMenu.fromJson).toList();
+  }
+
   Future<FoodEntry> createFood(Map<String, dynamic> body) async {
     final json = await _json('POST', '/api/food', body: body);
     return FoodEntry.fromJson(json);
@@ -128,6 +134,12 @@ class CaloraClient {
   }
 
   Future<Map<String, dynamic>> _decode(http.Response response) async {
+    final decoded = await _decodeAny(response);
+    if (decoded is Map<String, dynamic>) return decoded;
+    throw CaloraException(response.statusCode, 'Unexpected response');
+  }
+
+  Future<dynamic> _decodeAny(http.Response response) async {
     if (response.statusCode == 401) {
       await session.clear();
       throw CaloraException(401, _message(response));
@@ -135,10 +147,8 @@ class CaloraClient {
     if (response.statusCode >= 400) {
       throw CaloraException(response.statusCode, _message(response));
     }
-    if (response.body.isEmpty) return {};
-    final decoded = jsonDecode(response.body);
-    if (decoded is Map<String, dynamic>) return decoded;
-    throw CaloraException(response.statusCode, 'Unexpected response');
+    if (response.body.isEmpty) return <String, dynamic>{};
+    return jsonDecode(response.body);
   }
 
   String _message(http.Response response) {

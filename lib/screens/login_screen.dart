@@ -4,8 +4,6 @@ import '../api/calora_client.dart';
 import '../app.dart';
 import '../theme/calora_theme.dart';
 
-const _sand = Color(0xFFE4D6B1);
-
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -50,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFE6EADC),
+      backgroundColor: CaloraColors.backdrop,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -63,15 +61,23 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Center(child: Image.asset('assets/images/calora_logo.png', height: 116, semanticLabel: 'Calora')),
+                    Center(
+                      child: ColorFiltered(
+                        // The line art is black on transparent; flip it to light lines in dark mode.
+                        colorFilter: CaloraColors.dark
+                            ? const ColorFilter.matrix([-1, 0, 0, 0, 255, 0, -1, 0, 0, 255, 0, 0, -1, 0, 255, 0, 0, 0, 1, 0])
+                            : const ColorFilter.mode(Colors.transparent, BlendMode.dst),
+                        child: Image.asset('assets/images/calora_logo.png', height: 116, semanticLabel: 'Calora'),
+                      ),
+                    ),
                     const SizedBox(height: 24),
-                    const Text(
+                    Text(
                       'EAT SMART,\nLIVE FRESH',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontFamily: CaloraText.display, fontSize: 42, fontWeight: FontWeight.w700, color: CaloraColors.forest, height: 1),
+                      style: TextStyle(fontFamily: CaloraText.display, fontSize: 42, fontWeight: FontWeight.w700, color: CaloraColors.heading, height: 1),
                     ),
                     const SizedBox(height: 18),
-                    const Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [_Dash(CaloraColors.kiwi), _Dash(CaloraColors.sunshine), _Dash(CaloraColors.carrot)],
                     ),
@@ -110,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     if (_error != null)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 10),
-                        child: Text(_error!, style: const TextStyle(color: CaloraColors.danger)),
+                        child: Text(_error!, style: TextStyle(color: CaloraColors.danger)),
                       ),
                     FilledButton(
                       onPressed: _busy ? null : _submit,
@@ -122,14 +128,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Text(_busy ? 'Masuk…' : 'Masuk'),
                     ),
                     const SizedBox(height: 32),
-                    const Row(
+                    Row(
                       children: [
-                        Expanded(child: Divider(color: _sand)),
+                        Expanded(child: Divider(color: CaloraColors.sand)),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 14),
                           child: Text('atau masuk dengan', style: TextStyle(color: CaloraColors.inkMuted)),
                         ),
-                        Expanded(child: Divider(color: _sand)),
+                        Expanded(child: Divider(color: CaloraColors.sand)),
                       ],
                     ),
                     const SizedBox(height: 24),
@@ -158,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
       border: border,
       enabledBorder: border,
-      focusedBorder: border.copyWith(borderSide: const BorderSide(color: CaloraColors.forest, width: 2)),
+      focusedBorder: border.copyWith(borderSide: BorderSide(color: CaloraColors.heading, width: 2)),
     );
   }
 
@@ -168,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
       style: OutlinedButton.styleFrom(
         backgroundColor: Colors.transparent,
         foregroundColor: CaloraColors.ink,
-        side: const BorderSide(color: _sand),
+        side: BorderSide(color: CaloraColors.sand),
         minimumSize: const Size.fromHeight(58),
         padding: const EdgeInsets.symmetric(horizontal: 10),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -180,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
           CircleAvatar(
             radius: 12,
             backgroundColor: CaloraColors.cream,
-            child: Text(mark, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: CaloraColors.forest)),
+            child: Text(mark, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: CaloraColors.heading)),
           ),
           const SizedBox(width: 8),
           Flexible(child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis)),
@@ -199,7 +205,7 @@ class _Label extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
-      child: Text(text, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: CaloraColors.inkMuted)),
+      child: Text(text, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: CaloraColors.inkMuted)),
     );
   }
 }

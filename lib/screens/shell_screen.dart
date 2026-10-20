@@ -52,7 +52,7 @@ class _ShellScreenState extends State<ShellScreen> {
               bottom: 0,
               height: 78 + bottomInset,
               child: DecoratedBox(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: CaloraColors.canvas,
                   border: Border(top: BorderSide(color: CaloraColors.cream)),
                 ),
@@ -74,9 +74,9 @@ class _ShellScreenState extends State<ShellScreen> {
               top: 0,
               child: Material(
                 color: CaloraColors.accent,
-                shape: const CircleBorder(side: BorderSide(color: CaloraColors.canvas, width: 5)),
+                shape: CircleBorder(side: BorderSide(color: CaloraColors.canvas, width: 5)),
                 elevation: 6,
-                shadowColor: CaloraColors.carrot.withValues(alpha: 0.5),
+                shadowColor: Colors.black.withValues(alpha: 0.35),
                 child: InkWell(
                   onTap: _logMeal,
                   customBorder: const CircleBorder(),
@@ -96,7 +96,7 @@ class _ShellScreenState extends State<ShellScreen> {
 
   Widget _tab(int index, IconData icon, String label) {
     final selected = _index == index;
-    final color = selected ? CaloraColors.forest : CaloraColors.inkMuted;
+    final color = selected ? CaloraColors.heading : CaloraColors.inkMuted;
     return Expanded(
       child: InkWell(
         onTap: () => setState(() => _index = index),

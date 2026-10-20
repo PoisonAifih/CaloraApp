@@ -6,8 +6,6 @@ import '../theme/calora_theme.dart';
 import '../widgets/calorie_ring.dart';
 import '../widgets/calora_card.dart';
 
-const _sand = Color(0xFFE4D6B1);
-
 String _thousands(num value) {
   final raw = value.round().abs().toString();
   final buffer = StringBuffer(value < 0 ? '-' : '');
@@ -57,7 +55,7 @@ class HomeScreen extends StatelessWidget {
                 child: CircleAvatar(
                   radius: 28,
                   backgroundColor: CaloraColors.forest,
-                  foregroundColor: CaloraColors.cream,
+                  foregroundColor: CaloraColors.onForest,
                   child: Text(_initials(name), style: const TextStyle(fontFamily: CaloraText.display, fontSize: 20, fontWeight: FontWeight.w700)),
                 ),
               ),
@@ -70,16 +68,16 @@ class HomeScreen extends StatelessWidget {
                       firstName.isEmpty ? 'Halo 👋' : 'Halo, $firstName 👋',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: CaloraColors.forest),
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: CaloraColors.heading),
                     ),
-                    const Text('Semangat menjaga nutrisimu hari ini!', style: TextStyle(fontSize: 13, color: CaloraColors.inkMuted)),
+                    Text('Semangat menjaga nutrisimu hari ini!', style: TextStyle(fontSize: 13, color: CaloraColors.inkMuted)),
                   ],
                 ),
               ),
               const SizedBox(width: 8),
               Material(
                 color: CaloraColors.cream,
-                shape: const StadiumBorder(side: BorderSide(color: _sand)),
+                shape: StadiumBorder(side: BorderSide(color: CaloraColors.sand)),
                 child: InkWell(
                   onTap: onCatering,
                   customBorder: const StadiumBorder(),
@@ -91,11 +89,11 @@ class HomeScreen extends StatelessWidget {
                           width: 20,
                           height: 20,
                           alignment: Alignment.center,
-                          decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: CaloraColors.forest, width: 1.6)),
-                          child: const Text('T', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: CaloraColors.forest)),
+                          decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: CaloraColors.heading, width: 1.6)),
+                          child: Text('T', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: CaloraColors.heading)),
                         ),
                         const SizedBox(width: 6),
-                        Text('${store.tokenBalance}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: CaloraColors.forest)),
+                        Text('${store.tokenBalance}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: CaloraColors.heading)),
                       ],
                     ),
                   ),
@@ -103,12 +101,12 @@ class HomeScreen extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Material(
-                shape: const CircleBorder(side: BorderSide(color: _sand)),
+                shape: CircleBorder(side: BorderSide(color: CaloraColors.sand)),
                 color: Colors.transparent,
                 child: IconButton(
                   tooltip: 'Notifikasi',
                   onPressed: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Belum ada notifikasi'))),
-                  icon: const Icon(Icons.notifications_none, color: CaloraColors.ink),
+                  icon: Icon(Icons.notifications_none, color: CaloraColors.ink),
                 ),
               ),
             ],
@@ -119,7 +117,7 @@ class HomeScreen extends StatelessWidget {
           else ...[
             _energy(dash),
             const SizedBox(height: 30),
-            const Text('STATUS KATERING BESOK', style: CaloraText.section),
+            Text('STATUS KATERING BESOK', style: CaloraText.section),
             const SizedBox(height: 14),
             _catering(dash),
           ],
@@ -145,10 +143,10 @@ class HomeScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     FittedBox(
-                      child: Text(_thousands(dash.consumedKcal), style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w700, color: CaloraColors.ink, height: 1)),
+                      child: Text(_thousands(dash.consumedKcal), style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700, color: CaloraColors.ink, height: 1)),
                     ),
                     const SizedBox(height: 4),
-                    Text('/ ${_thousands(dash.targetKcal)} kcal', style: const TextStyle(fontSize: 12, color: CaloraColors.inkMuted)),
+                    Text('/ ${_thousands(dash.targetKcal)} kcal', style: TextStyle(fontSize: 12, color: CaloraColors.inkMuted)),
                   ],
                 ),
               ),
@@ -157,27 +155,27 @@ class HomeScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Sisa kalori', style: TextStyle(fontSize: 14, color: CaloraColors.inkMuted)),
+                    Text('Sisa kalori', style: TextStyle(fontSize: 14, color: CaloraColors.inkMuted)),
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       alignment: Alignment.centerLeft,
-                      child: Text(_thousands(left.abs()), style: const TextStyle(fontSize: 40, fontWeight: FontWeight.w700, color: CaloraColors.ink, height: 1.15)),
+                      child: Text(_thousands(left.abs()), style: TextStyle(fontSize: 40, fontWeight: FontWeight.w700, color: CaloraColors.ink, height: 1.15)),
                     ),
                     const SizedBox(height: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                       decoration: BoxDecoration(
-                        color: over ? const Color(0xFFFBE3DF) : const Color(0xFFDFEEDD),
+                        color: over ? CaloraColors.warnSoft : CaloraColors.okSoft,
                         borderRadius: BorderRadius.circular(999),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(over ? Icons.warning_amber_rounded : Icons.check, size: 16, color: over ? CaloraColors.tomato : CaloraColors.forest),
+                          Icon(over ? Icons.warning_amber_rounded : Icons.check, size: 16, color: over ? CaloraColors.tomato : CaloraColors.heading),
                           const SizedBox(width: 6),
                           Text(
                             over ? 'kcal berlebih' : 'kcal tersisa',
-                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: over ? CaloraColors.tomato : CaloraColors.forest),
+                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: over ? CaloraColors.tomato : CaloraColors.heading),
                           ),
                         ],
                       ),
@@ -205,7 +203,7 @@ class HomeScreen extends StatelessWidget {
         Row(
           children: [
             Expanded(child: Text(label, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
-            Text('${value.round()}g / ${target.round()}g', style: const TextStyle(fontSize: 14, color: CaloraColors.inkMuted)),
+            Text('${value.round()}g / ${target.round()}g', style: TextStyle(fontSize: 14, color: CaloraColors.inkMuted)),
           ],
         ),
         const SizedBox(height: 8),
@@ -228,31 +226,31 @@ class HomeScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(color: CaloraColors.forest, borderRadius: BorderRadius.circular(999)),
-                child: const Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.inventory_2_outlined, size: 15, color: CaloraColors.cream),
+                    Icon(Icons.inventory_2_outlined, size: 15, color: CaloraColors.onForest),
                     SizedBox(width: 6),
-                    Text('MENU BESOK', style: TextStyle(fontFamily: CaloraText.display, fontSize: 14, fontWeight: FontWeight.w700, letterSpacing: 0.8, color: CaloraColors.cream)),
+                    Text('MENU BESOK', style: TextStyle(fontFamily: CaloraText.display, fontSize: 14, fontWeight: FontWeight.w700, letterSpacing: 0.8, color: CaloraColors.onForest)),
                   ],
                 ),
               ),
               const Spacer(),
-              Text(_tomorrowLabel(), style: const TextStyle(fontSize: 14, color: CaloraColors.inkMuted)),
+              Text(_tomorrowLabel(), style: TextStyle(fontSize: 14, color: CaloraColors.inkMuted)),
             ],
           ),
           const SizedBox(height: 14),
           Text(lunch?.name ?? 'Belum ada menu', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
           const SizedBox(height: 4),
           if (lunch == null)
-            const Text('Menu besok muncul setelah paket catering aktif.', style: TextStyle(fontSize: 15, color: CaloraColors.inkMuted))
+            Text('Menu besok muncul setelah paket catering aktif.', style: TextStyle(fontSize: 15, color: CaloraColors.inkMuted))
           else ...[
             Text.rich(
               TextSpan(
-                style: const TextStyle(fontSize: 15, color: CaloraColors.inkMuted),
+                style: TextStyle(fontSize: 15, color: CaloraColors.inkMuted),
                 children: [
                   const TextSpan(text: 'Makan siang · '),
-                  TextSpan(text: '${_thousands(lunch.calories)} kcal', style: const TextStyle(fontWeight: FontWeight.w700, color: CaloraColors.ink)),
+                  TextSpan(text: '${_thousands(lunch.calories)} kcal', style: TextStyle(fontWeight: FontWeight.w700, color: CaloraColors.ink)),
                 ],
               ),
             ),
@@ -276,7 +274,7 @@ class HomeScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(color: CaloraColors.cream, borderRadius: BorderRadius.circular(8)),
-      child: Text(text, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: CaloraColors.forest)),
+      child: Text(text, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: CaloraColors.heading)),
     );
   }
 

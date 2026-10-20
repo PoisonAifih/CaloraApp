@@ -122,7 +122,7 @@ class _LogMealScreenState extends State<LogMealScreen> {
           ],
           if (_busy) const LinearProgressIndicator(),
           if (_summary != null && _summary!.isNotEmpty) ...[
-            Text(_summary!, style: const TextStyle(color: CaloraColors.inkMuted)),
+            Text(_summary!, style: TextStyle(color: CaloraColors.inkMuted)),
             const SizedBox(height: 12),
           ],
           TextField(controller: _name, decoration: const InputDecoration(labelText: 'Meal')),
@@ -148,7 +148,7 @@ class _LogMealScreenState extends State<LogMealScreen> {
           _number(_fat, 'Fat g'),
           if (_error != null) ...[
             const SizedBox(height: 12),
-            Text(_error!, style: const TextStyle(color: CaloraColors.danger)),
+            Text(_error!, style: TextStyle(color: CaloraColors.danger)),
           ],
           const SizedBox(height: 16),
           FilledButton(onPressed: _busy ? null : _save, child: const Text('Save meal')),

@@ -1,17 +1,50 @@
+import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter/foundation.dart';
 
 import 'api/calora_client.dart';
 import 'api/models.dart';
+import 'theme/theme_prefs.dart';
 
 class CaloraStore extends ChangeNotifier {
-  CaloraStore(this.client);
+  CaloraStore(this.client, {this.themePrefs});
 
   final CaloraClient client;
+  final ThemePrefs? themePrefs;
   bool ready = false;
   bool signedIn = false;
   CaloraUser? user;
   Dashboard? dashboard;
   String? error;
+
+  ThemeMode themeMode = ThemeMode.system;
+
+  /// Active catering menus; null until loaded.
+  List<CateringMenu>? menus;
+
+  Future<void> setThemeMode(ThemeMode mode) async {
+    themeMode = mode;
+    notifyListeners();
+    try {
+      await themePrefs?.write(mode.name);
+    } catch (_) {}
+  }
+
+  Future<void> _loadThemeMode() async {
+    try {
+      final saved = await themePrefs?.read();
+      themeMode = ThemeMode.values.firstWhere((mode) => mode.name == saved, orElse: () => ThemeMode.system);
+    } catch (_) {}
+  }
+
+  Future<void> loadMenus() async {
+    try {
+      menus = await client.menus();
+      notifyListeners();
+    } on CaloraException catch (_) {
+      menus ??= [];
+      notifyListeners();
+    }
+  }
 
   /// Catering tokens. Kept on the phone only until the server owns a balance.
   int tokenBalance = 20;
@@ -27,6 +60,7 @@ class CaloraStore extends ChangeNotifier {
   }
 
   Future<void> bootstrap() async {
+    await _loadThemeMode();
     try {
       user = await client.current();
       signedIn = user != null;
