@@ -63,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Center(child: SizedBox(width: 104, height: 104, child: CustomPaint(painter: _CarrotPainter()))),
+                    Center(child: Image.asset('assets/images/calora_logo.png', height: 116, semanticLabel: 'Calora')),
                     const SizedBox(height: 24),
                     const Text(
                       'EAT SMART,\nLIVE FRESH',
@@ -218,51 +218,4 @@ class _Dash extends StatelessWidget {
       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(4)),
     );
   }
-}
-
-/// Stand-in brand mark (same drawing as the web login) until the illustration is added as an asset.
-class _CarrotPainter extends CustomPainter {
-  const _CarrotPainter();
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    canvas.scale(size.width / 120, size.height / 120);
-    final line = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
-
-    final leaves = Path()
-      ..moveTo(78, 22)
-      ..quadraticBezierTo(69, 28, 67, 39)
-      ..moveTo(86, 30)
-      ..quadraticBezierTo(75, 32, 69, 41)
-      ..moveTo(70, 16)
-      ..quadraticBezierTo(69, 28, 73, 37);
-    canvas.drawPath(leaves, line..color = CaloraColors.forest..strokeWidth = 5);
-
-    final body = Path()
-      ..moveTo(70, 40)
-      ..cubicTo(78, 46, 79, 56, 73, 64)
-      ..lineTo(38, 104)
-      ..cubicTo(34, 109, 26, 107, 26, 100)
-      ..lineTo(32, 56)
-      ..cubicTo(34, 46, 44, 36, 56, 35)
-      ..cubicTo(61, 35, 66, 37, 70, 40)
-      ..close();
-    canvas.drawPath(body, Paint()..color = CaloraColors.carrot);
-    canvas.drawPath(body, line..color = CaloraColors.charcoal..strokeWidth = 4);
-
-    final marks = Path()
-      ..moveTo(44, 56)
-      ..lineTo(54, 62)
-      ..moveTo(38, 74)
-      ..lineTo(48, 79)
-      ..moveTo(34, 90)
-      ..lineTo(42, 94);
-    canvas.drawPath(marks, line);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
