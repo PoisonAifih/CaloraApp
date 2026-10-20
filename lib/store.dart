@@ -13,6 +13,19 @@ class CaloraStore extends ChangeNotifier {
   Dashboard? dashboard;
   String? error;
 
+  /// Catering tokens. Kept on the phone only until the server owns a balance.
+  int tokenBalance = 20;
+
+  void addTokens(int amount) {
+    tokenBalance += amount;
+    notifyListeners();
+  }
+
+  void spendTokens(int amount) {
+    tokenBalance -= amount;
+    notifyListeners();
+  }
+
   Future<void> bootstrap() async {
     try {
       user = await client.current();

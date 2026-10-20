@@ -217,6 +217,12 @@ class Dashboard {
     required this.currentKg,
     required this.targetKg,
     required this.effectiveDailyTarget,
+    this.consumedProtein = 0,
+    this.consumedCarbs = 0,
+    this.consumedFat = 0,
+    this.targetProtein = 0,
+    this.targetCarbs = 0,
+    this.targetFat = 0,
     this.tonight,
     this.lunch,
     this.weightTrend,
@@ -243,6 +249,12 @@ class Dashboard {
   final double? currentKg;
   final double? targetKg;
   final double effectiveDailyTarget;
+  final double consumedProtein;
+  final double consumedCarbs;
+  final double consumedFat;
+  final double targetProtein;
+  final double targetCarbs;
+  final double targetFat;
   final MealSuggestion? tonight;
   final KitchenLunch? lunch;
   final double? weightTrend;
@@ -281,6 +293,12 @@ class Dashboard {
       currentKg: goal['currentKg'] == null ? null : asDouble(goal['currentKg']),
       targetKg: goal['targetKg'] == null ? null : asDouble(goal['targetKg']),
       effectiveDailyTarget: asDouble(tomorrow['effectiveDailyTarget']),
+      consumedProtein: asDouble(consumed['protein']),
+      consumedCarbs: asDouble(consumed['carbs']),
+      consumedFat: asDouble(consumed['fat']),
+      targetProtein: asDouble(targets['protein']),
+      targetCarbs: asDouble(targets['carbs']),
+      targetFat: asDouble(targets['fat']),
       tonight: meal is Map<String, dynamic> ? MealSuggestion.fromJson(meal) : null,
       lunch: lunch is Map<String, dynamic> ? KitchenLunch.fromJson(lunch) : null,
       weightTrend: rolling['weightTrend'] == null ? null : asDouble(rolling['weightTrend']),

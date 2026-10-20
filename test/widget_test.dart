@@ -10,6 +10,6 @@ void main() {
     await tester.pumpWidget(CaloraApp(store: store));
     await tester.pump();
     await tester.pump();
-    expect(find.text('Sign in'), findsWidgets);
+    expect(find.text('Masuk'), findsWidgets);
   });
 }

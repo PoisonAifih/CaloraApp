@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../app.dart';
 import '../theme/calora_theme.dart';
 
 class _Pack {
@@ -42,11 +43,12 @@ class CateringScreen extends StatefulWidget {
 }
 
 class _CateringScreenState extends State<CateringScreen> {
-  int _balance = 20;
   String _packageId = 'p1';
   DateTime _endsAt = DateTime(2026, 10, 28);
   String _topupId = 't60';
   int _weeks = 1;
+
+  int get _balance => CaloraScope.of(context).tokenBalance;
 
   _Pack get _pack => _packs.firstWhere((item) => item.id == _packageId);
 
@@ -108,7 +110,7 @@ class _CateringScreenState extends State<CateringScreen> {
                 _info('Saldo setelah top up: ${_balance + picked.tokens} Token. Metode bayar: QRIS.'),
                 const SizedBox(height: 14),
                 _pay('Bayar ${_rp(picked.total)}', () {
-                  setState(() => _balance += picked.tokens);
+                  CaloraScope.of(this.context).addTokens(picked.tokens);
                   Navigator.pop(context);
                 }),
                 _cancel(context),
@@ -202,10 +204,8 @@ class _CateringScreenState extends State<CateringScreen> {
                     _openTopup();
                     return;
                   }
-                  setState(() {
-                    _balance -= cost;
-                    _endsAt = next;
-                  });
+                  CaloraScope.of(this.context).spendTokens(cost);
+                  setState(() => _endsAt = next);
                 }),
                 _cancel(context),
               ],
@@ -257,7 +257,7 @@ class _CateringScreenState extends State<CateringScreen> {
                   ],
                 ),
               ),
-              FilledButton(onPressed: _openTopup, child: const Text('+ Top Up')),
+              FilledButton(onPressed: _openTopup, style: FilledButton.styleFrom(minimumSize: const Size(0, 48)), child: const Text('+ Top Up')),
             ],
           ),
         ),

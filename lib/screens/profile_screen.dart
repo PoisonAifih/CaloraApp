@@ -6,6 +6,8 @@ import '../app.dart';
 import '../theme/calora_theme.dart';
 import '../update/update_prompt.dart';
 import '../widgets/calora_card.dart';
+import 'food_screen.dart';
+import 'trends_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -54,6 +56,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _goal = profile.goal;
     _diet = profile.dietaryPreference;
     _timezone = profile.timezone;
+  }
+
+  Widget _link(IconData icon, String label, Widget screen) {
+    return ListTile(
+      leading: Icon(icon, color: CaloraColors.forest),
+      title: Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
+      trailing: const Icon(Icons.chevron_right, color: CaloraColors.inkMuted),
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => Scaffold(appBar: AppBar(), body: SafeArea(top: false, child: screen))),
+      ),
+    );
   }
 
   String _trim(double value) => value.toStringAsFixed(value == value.roundToDouble() ? 0 : 1);
@@ -116,7 +129,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
       children: [
-        const Text('PROFILE', style: CaloraText.title),
+        const Text('OTHER', style: CaloraText.title),
+        const SizedBox(height: 12),
+        CaloraCard(
+          padding: EdgeInsets.zero,
+          child: Material(
+            type: MaterialType.transparency,
+            child: Column(
+              children: [
+                _link(Icons.rice_bowl_outlined, 'Food log', const FoodScreen()),
+                const Divider(height: 1, color: CaloraColors.cream),
+                _link(Icons.show_chart, 'Trends', const TrendsScreen()),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 18),
+        const Text('PROFILE', style: CaloraText.section),
         const SizedBox(height: 12),
         CaloraCard(
           child: Column(
