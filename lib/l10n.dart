@@ -84,6 +84,25 @@ const _id = {
   // Catering
   'CATERING': 'KATERING',
   'Swap tokens for weekly menu packages': 'Tukar token dengan paket menu mingguan',
+  'WHY TOKENS?': 'KENAPA PAKAI TOKEN?',
+  'Why tokens?': 'Kenapa pakai token?',
+  'Close': 'Tutup',
+  "You don't pick a portion size. Calora picks S, M or L for each meal, every day, based on what you need.":
+      'Kamu tidak memilih ukuran porsi. Setiap hari Calora memilih S, M, atau L untuk tiap makan sesuai kebutuhanmu.',
+  '{n} tokens': '{n} token',
+  'Per meal. Every day is lunch + dinner.': 'Per porsi. Setiap hari ada makan siang + makan malam.',
+  'EXAMPLE: BULKING': 'CONTOH: BULKING',
+  'Normal day': 'Hari biasa',
+  'Already ate out': 'Sudah jajan di luar',
+  '2 tokens stay in your balance for another day': '2 token tetap tersimpan untuk hari lain',
+  'Tokens only pay for what is delivered, so a smaller portion never costs you anything.':
+      'Token hanya terpakai sesuai porsi yang dikirim, jadi porsi lebih kecil tidak membuatmu rugi.',
+  'Deposit up front, for example 40 tokens a week. Leftovers (say 10 tokens) roll over to the next week.':
+      'Deposit di awal, misalnya 40 token per minggu. Sisanya (misal 10 token) dipakai lagi minggu berikutnya.',
+  'Tokens are valid for one year.': 'Token berlaku selama 1 tahun.',
+  'LUNCH & DINNER': 'MAKAN SIANG & MALAM',
+  '{size} · {n} tokens': '{size} · {n} token',
+  'Tomorrow: {n} tokens': 'Total besok: {n} token',
   'MY TOKEN BALANCE': 'SISA TOKEN SAYA',
   'Tokens': 'Token',
   '{n} Tokens': '{n} Token',

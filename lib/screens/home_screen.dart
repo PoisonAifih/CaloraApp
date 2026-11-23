@@ -216,7 +216,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _catering(Dashboard dash) {
-    final lunch = dash.lunch;
+    final meals = [dash.lunch, dash.dinner].whereType<KitchenLunch>().toList();
     return _card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -240,33 +240,63 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 14),
-          Text(lunch?.name ?? tr('No menu yet'), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
-          const SizedBox(height: 4),
-          if (lunch == null)
-            Text(tr("Tomorrow's menu appears once a catering package is active."), style: TextStyle(fontSize: 15, color: CaloraColors.inkMuted))
-          else ...[
-            Text.rich(
-              TextSpan(
-                style: TextStyle(fontSize: 15, color: CaloraColors.inkMuted),
-                children: [
-                  TextSpan(text: tr('Lunch · ')),
-                  TextSpan(text: '${_thousands(lunch.calories)} kcal', style: TextStyle(fontWeight: FontWeight.w700, color: CaloraColors.ink)),
-                ],
-              ),
-            ),
-            const SizedBox(height: 14),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                _chip('Protein ${lunch.proteinG.round()}g'),
-                _chip(tr('Carbs {n}g', {'n': lunch.carbsG.round()})),
-                _chip(tr('Fat {n}g', {'n': lunch.fatG.round()})),
-              ],
-            ),
+          if (meals.isEmpty) ...[
+            Text(tr('No menu yet'), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+            const SizedBox(height: 4),
+            Text(tr("Tomorrow's menu appears once a catering package is active."), style: TextStyle(fontSize: 15, color: CaloraColors.inkMuted)),
+          ],
+          for (final meal in meals) ...[
+            if (meal != meals.first) Divider(height: 32, color: CaloraColors.cream),
+            _plannedMeal(meal),
+          ],
+          if (dash.cateringTokens > 0) ...[
+            Divider(height: 32, color: CaloraColors.cream),
+            Text(tr('Tomorrow: {n} tokens', {'n': dash.cateringTokens}), style: TextStyle(fontWeight: FontWeight.w700, color: CaloraColors.heading)),
           ],
         ],
       ),
+    );
+  }
+
+  /// One catering meal: Lunch/Dinner, the portion size Calora picked and its token cost, then nutrition.
+  Widget _plannedMeal(KitchenLunch meal) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                tr(meal.mealType == 'DINNER' ? 'DINNER' : 'LUNCH'),
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.8, color: CaloraColors.inkMuted),
+              ),
+            ),
+            if (meal.size != null)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(color: CaloraColors.forest, borderRadius: BorderRadius.circular(999)),
+                child: Text(
+                  tr('{size} · {n} tokens', {'size': meal.size!, 'n': meal.tokens ?? 0}),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: CaloraColors.onForest),
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        Text(meal.name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+        const SizedBox(height: 4),
+        Text('${_thousands(meal.calories)} kcal', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: CaloraColors.ink)),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            _chip('Protein ${meal.proteinG.round()}g'),
+            _chip(tr('Carbs {n}g', {'n': meal.carbsG.round()})),
+            _chip(tr('Fat {n}g', {'n': meal.fatG.round()})),
+          ],
+        ),
+      ],
     );
   }
 

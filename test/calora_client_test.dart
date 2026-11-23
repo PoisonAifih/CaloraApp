@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:calora_app/api/calora_client.dart';
+import 'package:calora_app/api/models.dart';
 import 'package:calora_app/session.dart';
 
 void main() {
@@ -72,5 +73,19 @@ void main() {
     expect(entry.sodium, 900);
     expect(entry.sugar, 3);
     expect(entry.confidence, 0.7);
+  });
+
+  test("dashboard reads tomorrow's lunch and dinner with portion sizes and tokens", () {
+    final dash = Dashboard.fromJson({
+      'tomorrow': {
+        'tokens': 7,
+        'lunch': {'name': 'Nasi Goreng Ayam', 'mealType': 'LUNCH', 'size': 'L', 'tokens': 4, 'calories': 850, 'proteinG': 38, 'carbsG': 106, 'fatG': 30},
+        'dinner': {'name': 'Chicken Katsu', 'mealType': 'DINNER', 'size': 'M', 'tokens': 3, 'calories': 750, 'proteinG': 38, 'carbsG': 85, 'fatG': 28},
+      },
+    });
+    expect(dash.lunch?.size, 'L');
+    expect(dash.dinner?.mealType, 'DINNER');
+    expect(dash.dinner?.tokens, 3);
+    expect(dash.cateringTokens, 7);
   });
 }

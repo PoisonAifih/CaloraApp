@@ -199,7 +199,7 @@ class _CateringScreenState extends State<CateringScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(tr('Delivered to · Home'), style: TextStyle(fontWeight: FontWeight.w700)),
-                            Text('Jl. Sudirman No. 45, Jakarta Selatan'),
+                            Text('Jl. Raya Kb. Jeruk, Kemanggisan, Kec. Palmerah, Kota Jakarta Barat'),
                           ],
                         ),
                       ),
@@ -246,7 +246,28 @@ class _CateringScreenState extends State<CateringScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(tr('MY TOKEN BALANCE'), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 0.8)),
+                    Row(
+                      children: [
+                        Text(tr('MY TOKEN BALANCE'), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 0.8)),
+                        const SizedBox(width: 8),
+                        // Round "i" that opens the token explainer.
+                        Semantics(
+                          button: true,
+                          label: tr('Why tokens?'),
+                          child: InkWell(
+                            onTap: _openTokenInfo,
+                            customBorder: const CircleBorder(),
+                            child: Container(
+                              width: 22,
+                              height: 22,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: CaloraColors.onForest, width: 1.5)),
+                              child: Text('i', style: TextStyle(fontFamily: 'serif', fontStyle: FontStyle.italic, fontWeight: FontWeight.w700, fontSize: 13, color: CaloraColors.onForest)),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 8),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -343,6 +364,136 @@ class _CateringScreenState extends State<CateringScreen> {
     );
   }
 
+  /// Why the kitchen sells tokens instead of fixed-price portions: portion sizes and their prices,
+  /// a bulking example where eating out saves tokens, and how leftovers carry over.
+  Future<void> _openTokenInfo() {
+    const sizes = [('S', 2, 34.0), ('M', 3, 46.0), ('L', 4, 58.0)];
+    final bowlColors = [CaloraColors.kiwi, CaloraColors.sunshine, CaloraColors.carrot];
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: CaloraColors.canvas,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (context) => _sheet(
+        title: tr('WHY TOKENS?'),
+        copy: tr("You don't pick a portion size. Calora picks S, M or L for each meal, every day, based on what you need."),
+        children: [
+          Row(
+            children: [
+              for (var i = 0; i < sizes.length; i++) ...[
+                if (i > 0) const SizedBox(width: 8),
+                Expanded(
+                  child: Container(
+                    height: 116,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    decoration: BoxDecoration(color: CaloraColors.cream, borderRadius: BorderRadius.circular(12)),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        // A bowl that grows with the portion: rim plus filling.
+                        Container(
+                          width: sizes[i].$3,
+                          height: sizes[i].$3 / 2,
+                          decoration: BoxDecoration(
+                            color: CaloraColors.surface,
+                            border: Border(
+                              top: BorderSide(color: bowlColors[i], width: 5),
+                              left: BorderSide(color: CaloraColors.ink, width: 2),
+                              right: BorderSide(color: CaloraColors.ink, width: 2),
+                              bottom: BorderSide(color: CaloraColors.ink, width: 2),
+                            ),
+                            borderRadius: BorderRadius.vertical(bottom: Radius.circular(sizes[i].$3)),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(sizes[i].$1, style: CaloraText.stat(28)),
+                        Text(tr('{n} tokens', {'n': sizes[i].$2}), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: CaloraColors.inkMuted)),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+          const SizedBox(height: 8),
+          Center(child: Text(tr('Per meal. Every day is lunch + dinner.'), textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: CaloraColors.inkMuted))),
+          const SizedBox(height: 14),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), border: Border.all(color: CaloraColors.sand)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(tr('EXAMPLE: BULKING'), style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 0.8, color: CaloraColors.inkMuted)),
+                const SizedBox(height: 8),
+                _exampleDay(tr('Normal day'), const ['L', 'L'], 8),
+                const SizedBox(height: 6),
+                _exampleDay(tr('Already ate out'), const ['L', 'S'], 6, saving: true),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Icon(Icons.savings_outlined, size: 20, color: CaloraColors.heading),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text(tr('2 tokens stay in your balance for another day'), style: TextStyle(fontWeight: FontWeight.w600, color: CaloraColors.heading))),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 6),
+          _fact(Icons.payments_outlined, tr('Tokens only pay for what is delivered, so a smaller portion never costs you anything.')),
+          _fact(Icons.autorenew, tr('Deposit up front, for example 40 tokens a week. Leftovers (say 10 tokens) roll over to the next week.')),
+          _fact(Icons.event_available_outlined, tr('Tokens are valid for one year.')),
+          const SizedBox(height: 16),
+          SizedBox(width: double.infinity, child: OutlinedButton(onPressed: () => Navigator.pop(context), child: Text(tr('Close')))),
+        ],
+      ),
+    );
+  }
+
+  Widget _exampleDay(String label, List<String> meals, int tokens, {bool saving = false}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(color: saving ? CaloraColors.okSoft : null, borderRadius: BorderRadius.circular(8)),
+      child: Row(
+        children: [
+          Expanded(child: Text(label)),
+          for (var i = 0; i < meals.length; i++) ...[
+            if (i > 0) const Padding(padding: EdgeInsets.symmetric(horizontal: 4), child: Text('+')),
+            Container(
+              width: 24,
+              height: 24,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(color: meals[i] == 'S' ? CaloraColors.kiwi : CaloraColors.carrot, shape: BoxShape.circle),
+              child: Text(meals[i], style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: meals[i] == 'S' ? const Color(0xFF1C1E1B) : Colors.white)),
+            ),
+          ],
+          const SizedBox(width: 10),
+          Text(tr('{n} tokens', {'n': tokens}), style: TextStyle(fontWeight: FontWeight.w700, color: CaloraColors.heading)),
+        ],
+      ),
+    );
+  }
+
+  Widget _fact(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(color: CaloraColors.cream, shape: BoxShape.circle),
+            child: Icon(icon, size: 17, color: CaloraColors.heading),
+          ),
+          const SizedBox(width: 10),
+          Expanded(child: Padding(padding: const EdgeInsets.only(top: 6), child: Text(text, style: const TextStyle(height: 1.4)))),
+        ],
+      ),
+    );
+  }
+
   List<Widget> _menuList() {
     final menus = CaloraScope.of(context).menus;
     if (menus == null) return [Text(tr('Loading menus…'), style: TextStyle(color: CaloraColors.inkMuted))];
@@ -365,7 +516,7 @@ class _CateringScreenState extends State<CateringScreen> {
                 children: [
                   Expanded(
                     child: Text(
-                      tr(menu.mealType),
+                      menu.mealType == 'LUNCH' || menu.mealType == 'DINNER' ? tr('LUNCH & DINNER') : tr(menu.mealType),
                       style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.8, color: CaloraColors.heading),
                     ),
                   ),

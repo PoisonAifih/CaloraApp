@@ -196,18 +196,34 @@ class MealSuggestion {
   }
 }
 
+/// A planned catering meal (lunch or dinner), cooked as portion [size] S, M or L for [tokens] tokens.
 class KitchenLunch {
-  KitchenLunch({required this.name, required this.calories, required this.proteinG, required this.carbsG, required this.fatG});
+  KitchenLunch({
+    required this.name,
+    required this.calories,
+    required this.proteinG,
+    required this.carbsG,
+    required this.fatG,
+    this.mealType = 'LUNCH',
+    this.size,
+    this.tokens,
+  });
 
   final String name;
   final double calories;
   final double proteinG;
   final double carbsG;
   final double fatG;
+  final String mealType;
+  final String? size;
+  final int? tokens;
 
   factory KitchenLunch.fromJson(Map<String, dynamic> json) {
     return KitchenLunch(
       name: '${json['name'] ?? 'Lunch'}',
+      mealType: '${json['mealType'] ?? 'LUNCH'}',
+      size: json['size'] as String?,
+      tokens: json['tokens'] == null ? null : asDouble(json['tokens']).round(),
       calories: asDouble(json['calories']),
       proteinG: asDouble(json['proteinG']),
       carbsG: asDouble(json['carbsG']),
@@ -265,6 +281,8 @@ class Dashboard {
     this.maxSodium = 0,
     this.tonight,
     this.lunch,
+    this.dinner,
+    this.cateringTokens = 0,
     this.weightTrend,
     this.averageCalories = 0,
     this.averageProtein = 0,
@@ -302,6 +320,10 @@ class Dashboard {
   final double maxSodium;
   final MealSuggestion? tonight;
   final KitchenLunch? lunch;
+  final KitchenLunch? dinner;
+
+  /// Tokens tomorrow's lunch and dinner cost together.
+  final int cateringTokens;
   final double? weightTrend;
   final double averageCalories;
   final double averageProtein;
@@ -324,6 +346,7 @@ class Dashboard {
     final meal = tonight['meal'];
     final tomorrow = _map(json['tomorrow']);
     final lunch = tomorrow['lunch'];
+    final dinner = tomorrow['dinner'];
     final goal = _map(json['goalSummary']);
     final rolling = _map(tomorrow['rollingState']);
     final profile = json['profile'];
@@ -350,6 +373,8 @@ class Dashboard {
       maxSodium: asDouble(targets['sodium']),
       tonight: meal is Map<String, dynamic> ? MealSuggestion.fromJson(meal) : null,
       lunch: lunch is Map<String, dynamic> ? KitchenLunch.fromJson(lunch) : null,
+      dinner: dinner is Map<String, dynamic> ? KitchenLunch.fromJson(dinner) : null,
+      cateringTokens: asDouble(tomorrow['tokens']).round(),
       weightTrend: rolling['weightTrend'] == null ? null : asDouble(rolling['weightTrend']),
       averageCalories: asDouble(rolling['averageCalories']),
       averageProtein: asDouble(rolling['averageProtein']),
