@@ -35,7 +35,8 @@ class CaloraColors {
   /// Area behind the login card.
   static Color get backdrop => _pick(0xFFE6EADC, 0xFF0B0D0A);
 
-  static Color get bg => canvas;
+  /// Page background: cream in light mode (cards stay [surface]), the dark canvas in dark mode.
+  static Color get bg => dark ? canvas : cream;
   static Color get surface => canvas;
   static Color get ink => charcoal;
   static Color get inkMuted => mutedGreen;

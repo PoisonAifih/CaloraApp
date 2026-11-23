@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../api/models.dart';
 import '../app.dart';
-import '../theme/calora_theme.dart';
-import '../widgets/calorie_ring.dart';
-import '../widgets/calora_card.dart';
 import '../l10n.dart';
+import '../theme/calora_theme.dart';
+import '../widgets/calora_card.dart';
+import '../widgets/calorie_ring.dart';
 
 String _thousands(num value) {
   final raw = value.round().abs().toString();

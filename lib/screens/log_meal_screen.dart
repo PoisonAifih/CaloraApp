@@ -4,13 +4,16 @@ import 'package:image_picker/image_picker.dart';
 import '../api/calora_client.dart';
 import '../api/models.dart';
 import '../app.dart';
-import '../theme/calora_theme.dart';
 import '../l10n.dart';
+import '../theme/calora_theme.dart';
 
 class LogMealScreen extends StatefulWidget {
-  const LogMealScreen({this.manual = false, super.key});
+  const LogMealScreen({this.manual = false, this.entry, super.key});
 
   final bool manual;
+
+  /// When set, the form opens filled with this meal and saving updates it.
+  final FoodEntry? entry;
 
   @override
   State<LogMealScreen> createState() => _LogMealScreenState();
@@ -30,6 +33,23 @@ class _LogMealScreenState extends State<LogMealScreen> {
   bool _busy = false;
   String? _error;
   String? _summary;
+
+  @override
+  void initState() {
+    super.initState();
+    final entry = widget.entry;
+    if (entry == null) return;
+    String number(double value) => value == value.roundToDouble() ? value.round().toString() : value.toString();
+    _name.text = entry.meal;
+    _category = entry.category;
+    _kcal.text = number(entry.kcal);
+    _protein.text = number(entry.protein);
+    _carbs.text = number(entry.carbs);
+    _fat.text = number(entry.fat);
+    _sugar.text = number(entry.sugar);
+    _sodium.text = number(entry.sodium);
+    _source = entry.source;
+  }
 
   @override
   void dispose() {
@@ -84,7 +104,9 @@ class _LogMealScreenState extends State<LogMealScreen> {
       _error = null;
     });
     try {
-      await CaloraScope.of(context).client.createFood({
+      final entry = widget.entry;
+      final client = CaloraScope.of(context).client;
+      final body = {
         'meal': _name.text.trim(),
         'category': _category,
         'kcal': kcal,
@@ -94,8 +116,15 @@ class _LogMealScreenState extends State<LogMealScreen> {
         'sugar': double.tryParse(_sugar.text) ?? 0,
         'sodium': double.tryParse(_sodium.text) ?? 0,
         'source': _source,
-        'createdAt': DateTime.now().toUtc().toIso8601String(),
-      });
+        // Editing keeps the meal's original time and AI confidence; the server would otherwise reset them.
+        'createdAt': entry?.createdAt ?? DateTime.now().toUtc().toIso8601String(),
+        'confidence': ?entry?.confidence,
+      };
+      if (entry == null) {
+        await client.createFood(body);
+      } else {
+        await client.updateFood(entry.id, body);
+      }
       if (!mounted) return;
       await CaloraScope.of(context).refresh();
       if (mounted) Navigator.of(context).pop(true);
@@ -109,7 +138,7 @@ class _LogMealScreenState extends State<LogMealScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(tr('LOG A MEAL'))),
+      appBar: AppBar(title: Text(widget.entry == null ? tr('LOG A MEAL') : tr('EDIT MEAL'))),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
         children: [

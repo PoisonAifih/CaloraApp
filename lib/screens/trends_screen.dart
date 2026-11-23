@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import '../api/calora_client.dart';
 import '../app.dart';
 import '../format.dart';
+import '../l10n.dart';
 import '../theme/calora_theme.dart';
 import '../widgets/calora_card.dart';
 import '../widgets/weight_chart.dart';
-import '../l10n.dart';
 
 class TrendsScreen extends StatefulWidget {
   const TrendsScreen({super.key});

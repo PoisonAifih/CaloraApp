@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../api/calora_client.dart';
 import '../app.dart';
-import '../theme/calora_theme.dart';
 import '../l10n.dart';
+import '../theme/calora_theme.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

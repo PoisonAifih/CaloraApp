@@ -45,10 +45,17 @@ class FoodScreen extends StatelessWidget {
                         Text('${tr(food.category)} · ${formatWhen(food.createdAt)}', style: TextStyle(color: CaloraColors.inkMuted)),
                         const SizedBox(height: 4),
                         Text('${roundNum(food.kcal)} kcal   P ${roundNum(food.protein)}   C ${roundNum(food.carbs)}   F ${roundNum(food.fat)}'),
+                        Text('${tr('Sugar')} ${roundNum(food.sugar)}g   Na ${roundNum(food.sodium)}mg', style: TextStyle(color: CaloraColors.inkMuted)),
                       ],
                     ),
                   ),
                   IconButton(
+                    tooltip: tr('Edit'),
+                    onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => LogMealScreen(manual: true, entry: food))),
+                    icon: Icon(Icons.edit_outlined, color: CaloraColors.heading),
+                  ),
+                  IconButton(
+                    tooltip: tr('Delete'),
                     onPressed: () => _delete(context, food.id),
                     icon: Icon(Icons.delete_outline, color: CaloraColors.danger),
                   ),

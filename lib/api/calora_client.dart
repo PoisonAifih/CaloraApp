@@ -75,6 +75,11 @@ class CaloraClient {
     return FoodEntry.fromJson(json);
   }
 
+  Future<FoodEntry> updateFood(String id, Map<String, dynamic> body) async {
+    final json = await _json('PUT', '/api/food/${Uri.encodeComponent(id)}', body: body);
+    return FoodEntry.fromJson(json);
+  }
+
   Future<void> deleteFood(String id) async {
     await _json('DELETE', '/api/food/${Uri.encodeComponent(id)}');
   }

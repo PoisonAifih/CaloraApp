@@ -146,6 +146,8 @@ const _id = {
 
   // Log a meal
   'LOG A MEAL': 'CATAT MAKANAN',
+  'EDIT MEAL': 'UBAH MAKANAN',
+  'Edit': 'Ubah',
   'Camera': 'Kamera',
   'Gallery': 'Galeri',
   'Meal': 'Makanan',

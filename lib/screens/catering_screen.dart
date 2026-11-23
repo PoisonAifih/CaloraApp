@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../app.dart';
-import '../theme/calora_theme.dart';
 import '../l10n.dart';
+import '../theme/calora_theme.dart';
 
 class _Pack {
   const _Pack(this.id, this.name, this.title, this.kcal, this.weekly);

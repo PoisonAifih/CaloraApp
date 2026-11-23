@@ -101,7 +101,10 @@ class FoodEntry {
     required this.carbs,
     required this.fat,
     required this.createdAt,
+    this.sugar = 0,
+    this.sodium = 0,
     this.source = 'MANUAL',
+    this.confidence,
   });
 
   final String id;
@@ -111,8 +114,13 @@ class FoodEntry {
   final double protein;
   final double carbs;
   final double fat;
+  final double sugar;
+  final double sodium;
   final String createdAt;
   final String source;
+
+  /// AI confidence 0..1 for photo estimates; null for manual entries.
+  final double? confidence;
 
   factory FoodEntry.fromJson(Map<String, dynamic> json) {
     return FoodEntry(
@@ -123,8 +131,11 @@ class FoodEntry {
       protein: asDouble(json['protein']),
       carbs: asDouble(json['carbs']),
       fat: asDouble(json['fat']),
+      sugar: asDouble(json['sugar']),
+      sodium: asDouble(json['sodium']),
       createdAt: '${json['createdAt'] ?? ''}',
       source: '${json['source'] ?? 'MANUAL'}',
+      confidence: json['confidence'] == null ? null : asDouble(json['confidence']),
     );
   }
 }
