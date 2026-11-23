@@ -7,7 +7,7 @@ import 'package:http_parser/http_parser.dart';
 import '../session.dart';
 import 'models.dart';
 
-const apiBaseUrl = String.fromEnvironment('API_BASE_URL', defaultValue: 'https://vpnbox.tail96a6cf.ts.net');
+const apiBaseUrl = String.fromEnvironment('API_BASE_URL', defaultValue: 'https://poisonaifih.tail5d3722.ts.net/calora');
 
 class CaloraException implements Exception {
   CaloraException(this.status, this.message);
