@@ -32,4 +32,24 @@ void main() {
     expect(await store.read(), isNull);
     expect(calls, 2);
   });
+
+  test('guest login posts to the guest endpoint and stores the token', () async {
+    final store = MemorySessionStore();
+    final client = CaloraClient(
+      session: store,
+      baseUrl: 'http://example.test/calora',
+      httpClient: MockClient((request) async {
+        expect(request.method, 'POST');
+        expect(request.url.path, '/calora/api/session/guest');
+        return http.Response(
+          '{"sessionToken":"guest-token","user":{"id":"guest_1","name":"Guest ab12","email":null,"role":"GUEST","profile":null}}',
+          200,
+        );
+      }),
+    );
+
+    final user = await client.loginAsGuest();
+    expect(user.role, 'GUEST');
+    expect(await store.read(), 'guest-token');
+  });
 }

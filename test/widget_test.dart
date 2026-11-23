@@ -11,5 +11,8 @@ void main() {
     await tester.pump();
     await tester.pump();
     expect(find.text('Masuk'), findsWidgets);
+    expect(find.text('Continue as guest'), findsOneWidget);
+    expect(find.text('Login with Google coming soon'), findsOneWidget);
+    expect(find.text('Apple ID'), findsNothing);
   });
 }

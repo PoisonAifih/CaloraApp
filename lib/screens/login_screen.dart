@@ -27,13 +27,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _submit() async {
     if (_username.text.trim().isEmpty || _password.text.isEmpty) return;
+    await _run(() => CaloraScope.of(context).login(_username.text.trim(), _password.text));
+  }
+
+  Future<void> _guest() => _run(() => CaloraScope.of(context).loginAsGuest());
+
+  Future<void> _run(Future<void> Function() signIn) async {
     setState(() {
       _busy = true;
       _error = null;
     });
     try {
-      final store = CaloraScope.of(context);
-      await store.login(_username.text.trim(), _password.text);
+      await signIn();
     } on CaloraException catch (error) {
       if (mounted) setState(() => _error = error.status == 401 ? 'Username atau password salah' : error.message);
     } finally {
@@ -127,24 +132,23 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       child: Text(_busy ? 'Masuk…' : 'Masuk'),
                     ),
-                    const SizedBox(height: 32),
-                    Row(
-                      children: [
-                        Expanded(child: Divider(color: CaloraColors.sand)),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 14),
-                          child: Text('atau masuk dengan', style: TextStyle(color: CaloraColors.inkMuted)),
-                        ),
-                        Expanded(child: Divider(color: CaloraColors.sand)),
-                      ],
+                    const SizedBox(height: 14),
+                    OutlinedButton(
+                      onPressed: _busy ? null : _guest,
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: CaloraColors.ink,
+                        side: BorderSide(color: CaloraColors.sand),
+                        minimumSize: const Size.fromHeight(56),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        textStyle: const TextStyle(fontFamily: CaloraText.body, fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
+                      child: const Text('Continue as guest'),
                     ),
                     const SizedBox(height: 24),
-                    Row(
-                      children: [
-                        Expanded(child: _social('G', 'Google', () => _soon('Masuk dengan Google'))),
-                        const SizedBox(width: 14),
-                        Expanded(child: _social('A', 'Apple ID', () => _soon('Masuk dengan Apple ID'))),
-                      ],
+                    Text(
+                      'Login with Google coming soon',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: CaloraColors.inkMuted),
                     ),
                   ],
                 ),
@@ -168,32 +172,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _social(String mark, String label, VoidCallback onTap) {
-    return OutlinedButton(
-      onPressed: onTap,
-      style: OutlinedButton.styleFrom(
-        backgroundColor: Colors.transparent,
-        foregroundColor: CaloraColors.ink,
-        side: BorderSide(color: CaloraColors.sand),
-        minimumSize: const Size.fromHeight(58),
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        textStyle: const TextStyle(fontFamily: CaloraText.body, fontSize: 16, fontWeight: FontWeight.w600),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircleAvatar(
-            radius: 12,
-            backgroundColor: CaloraColors.cream,
-            child: Text(mark, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: CaloraColors.heading)),
-          ),
-          const SizedBox(width: 8),
-          Flexible(child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis)),
-        ],
-      ),
-    );
-  }
 }
 
 class _Label extends StatelessWidget {

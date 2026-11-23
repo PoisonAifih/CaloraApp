@@ -75,8 +75,12 @@ class CaloraStore extends ChangeNotifier {
     }
   }
 
-  Future<void> login(String username, String password) async {
-    user = await client.login(username, password);
+  Future<void> login(String username, String password) => _signedIn(client.login(username, password));
+
+  Future<void> loginAsGuest() => _signedIn(client.loginAsGuest());
+
+  Future<void> _signedIn(Future<CaloraUser> session) async {
+    user = await session;
     signedIn = true;
     error = null;
     notifyListeners();

@@ -29,8 +29,14 @@ class CaloraClient {
   final http.Client httpClient;
   String baseUrl;
 
-  Future<CaloraUser> login(String username, String password) async {
-    final json = await _json('POST', '/api/session', body: {'username': username, 'password': password});
+  Future<CaloraUser> login(String username, String password) =>
+      _startSession('/api/session', {'username': username, 'password': password});
+
+  /// A fresh throwaway account; the server deletes it after a day.
+  Future<CaloraUser> loginAsGuest() => _startSession('/api/session/guest', null);
+
+  Future<CaloraUser> _startSession(String path, Map<String, dynamic>? body) async {
+    final json = await _json('POST', path, body: body);
     final token = json['sessionToken'];
     if (token is! String || token.isEmpty) {
       throw CaloraException(500, 'Sign in did not return a session');
