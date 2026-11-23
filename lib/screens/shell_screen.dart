@@ -6,6 +6,7 @@ import 'home_screen.dart';
 import 'log_meal_screen.dart';
 import 'profile_screen.dart';
 import 'workout_screen.dart';
+import '../l10n.dart';
 
 class ShellScreen extends StatefulWidget {
   const ShellScreen({super.key});
@@ -60,11 +61,11 @@ class _ShellScreenState extends State<ShellScreen> {
                   padding: EdgeInsets.only(bottom: bottomInset),
                   child: Row(
                     children: [
-                      _tab(0, Icons.home_outlined, 'Home'),
-                      _tab(1, Icons.restaurant_outlined, 'Catering'),
+                      _tab(0, Icons.home_outlined, tr('Home')),
+                      _tab(1, Icons.restaurant_outlined, tr('Catering')),
                       const Expanded(child: SizedBox()),
-                      _tab(2, Icons.track_changes, 'Activity'),
-                      _tab(3, Icons.more_horiz, 'Other'),
+                      _tab(2, Icons.track_changes, tr('Activity')),
+                      _tab(3, Icons.more_horiz, tr('Other')),
                     ],
                   ),
                 ),
@@ -80,10 +81,10 @@ class _ShellScreenState extends State<ShellScreen> {
                 child: InkWell(
                   onTap: _logMeal,
                   customBorder: const CircleBorder(),
-                  child: const SizedBox(
+                  child: SizedBox(
                     width: 70,
                     height: 70,
-                    child: Icon(Icons.photo_camera_outlined, color: Colors.white, size: 30, semanticLabel: 'Foto makanan'),
+                    child: Icon(Icons.photo_camera_outlined, color: Colors.white, size: 30, semanticLabel: tr('Food photo')),
                   ),
                 ),
               ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'l10n.dart';
 import 'screens/login_screen.dart';
 import 'screens/shell_screen.dart';
 import 'store.dart';
@@ -29,6 +30,8 @@ class CaloraApp extends StatefulWidget {
 }
 
 class _CaloraAppState extends State<CaloraApp> with WidgetsBindingObserver {
+  String _language = AppLanguage.code;
+
   @override
   void initState() {
     super.initState();
@@ -56,12 +59,13 @@ class _CaloraAppState extends State<CaloraApp> with WidgetsBindingObserver {
     };
   }
 
-  /// Colours are read from [CaloraColors] getters, so a theme switch has to rebuild
-  /// every element, including const widgets that would otherwise be skipped.
+  /// Colours and text are read from [CaloraColors] getters and [tr], so a theme or language switch
+  /// has to rebuild every element, including const widgets that would otherwise be skipped.
   void _applyTheme() {
     final dark = _wantsDark();
-    if (dark == CaloraColors.dark || !mounted) return;
+    if ((dark == CaloraColors.dark && _language == AppLanguage.code) || !mounted) return;
     CaloraColors.dark = dark;
+    _language = AppLanguage.code;
     setState(() {});
     void rebuild(Element element) {
       element.markNeedsBuild();

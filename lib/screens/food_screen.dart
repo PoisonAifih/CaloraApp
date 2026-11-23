@@ -6,6 +6,7 @@ import '../format.dart';
 import '../theme/calora_theme.dart';
 import '../widgets/calora_card.dart';
 import 'log_meal_screen.dart';
+import '../l10n.dart';
 
 class FoodScreen extends StatelessWidget {
   const FoodScreen({super.key});
@@ -22,15 +23,15 @@ class FoodScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(child: Text('FOOD', style: CaloraText.title)),
+              Expanded(child: Text(tr('FOOD'), style: CaloraText.title)),
               TextButton(
                 onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const LogMealScreen(manual: true))),
-                child: const Text('Enter manually'),
+                child: Text(tr('Enter manually')),
               ),
             ],
           ),
           const SizedBox(height: 8),
-          if (foods.isEmpty) const CaloraCard(child: Text('No meals yet. Use the camera button to log one.')),
+          if (foods.isEmpty) CaloraCard(child: Text(tr('No meals yet. Use the camera button to log one.'))),
           for (final food in foods) ...[
             CaloraCard(
               child: Row(
@@ -41,7 +42,7 @@ class FoodScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(food.meal, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
-                        Text('${food.category} · ${formatWhen(food.createdAt)}', style: TextStyle(color: CaloraColors.inkMuted)),
+                        Text('${tr(food.category)} · ${formatWhen(food.createdAt)}', style: TextStyle(color: CaloraColors.inkMuted)),
                         const SizedBox(height: 4),
                         Text('${roundNum(food.kcal)} kcal   P ${roundNum(food.protein)}   C ${roundNum(food.carbs)}   F ${roundNum(food.fat)}'),
                       ],
@@ -65,10 +66,10 @@ class FoodScreen extends StatelessWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete meal?'),
+        title: Text(tr('Delete meal?')),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Keep')),
-          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Delete')),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(tr('Keep'))),
+          TextButton(onPressed: () => Navigator.pop(context, true), child: Text(tr('Delete'))),
         ],
       ),
     );

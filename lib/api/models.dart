@@ -245,9 +245,13 @@ class Dashboard {
     this.consumedProtein = 0,
     this.consumedCarbs = 0,
     this.consumedFat = 0,
+    this.consumedSugar = 0,
+    this.consumedSodium = 0,
     this.targetProtein = 0,
     this.targetCarbs = 0,
     this.targetFat = 0,
+    this.maxSugar = 0,
+    this.maxSodium = 0,
     this.tonight,
     this.lunch,
     this.weightTrend,
@@ -277,9 +281,14 @@ class Dashboard {
   final double consumedProtein;
   final double consumedCarbs;
   final double consumedFat;
+  final double consumedSugar;
+  final double consumedSodium;
   final double targetProtein;
   final double targetCarbs;
   final double targetFat;
+  /// Daily upper limits, not goals.
+  final double maxSugar;
+  final double maxSodium;
   final MealSuggestion? tonight;
   final KitchenLunch? lunch;
   final double? weightTrend;
@@ -321,9 +330,13 @@ class Dashboard {
       consumedProtein: asDouble(consumed['protein']),
       consumedCarbs: asDouble(consumed['carbs']),
       consumedFat: asDouble(consumed['fat']),
+      consumedSugar: asDouble(consumed['sugar']),
+      consumedSodium: asDouble(consumed['sodium']),
       targetProtein: asDouble(targets['protein']),
       targetCarbs: asDouble(targets['carbs']),
       targetFat: asDouble(targets['fat']),
+      maxSugar: asDouble(targets['sugar']),
+      maxSodium: asDouble(targets['sodium']),
       tonight: meal is Map<String, dynamic> ? MealSuggestion.fromJson(meal) : null,
       lunch: lunch is Map<String, dynamic> ? KitchenLunch.fromJson(lunch) : null,
       weightTrend: rolling['weightTrend'] == null ? null : asDouble(rolling['weightTrend']),

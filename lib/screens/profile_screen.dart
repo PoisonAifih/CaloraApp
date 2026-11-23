@@ -8,6 +8,7 @@ import '../update/update_prompt.dart';
 import '../widgets/calora_card.dart';
 import 'food_screen.dart';
 import 'trends_screen.dart';
+import '../l10n.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -90,7 +91,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final target = double.tryParse(_target.text);
     final rate = double.tryParse(_rate.text);
     if (bb == null || tb == null || age == null || target == null || rate == null) {
-      setState(() => _error = 'Fill in weight, height, age, target, and rate');
+      setState(() => _error = tr('Fill in weight, height, age, target, and rate'));
       return;
     }
     final body = {
@@ -115,7 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       await CaloraScope.of(context).client.saveProfile(body);
       if (mounted) await CaloraScope.of(context).refresh();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile saved')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(tr('Profile saved'))));
       }
     } on CaloraException catch (error) {
       if (mounted) setState(() => _error = error.message);
@@ -129,7 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
       children: [
-        Text('OTHER', style: CaloraText.title),
+        Text(tr('OTHER'), style: CaloraText.title),
         const SizedBox(height: 12),
         CaloraCard(
           padding: EdgeInsets.zero,
@@ -137,22 +138,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
             type: MaterialType.transparency,
             child: Column(
               children: [
-                _link(Icons.rice_bowl_outlined, 'Food log', const FoodScreen()),
+                _link(Icons.rice_bowl_outlined, tr('Food log'), const FoodScreen()),
                 Divider(height: 1, color: CaloraColors.cream),
-                _link(Icons.show_chart, 'Trends', const TrendsScreen()),
+                _link(Icons.show_chart, tr('Trends'), const TrendsScreen()),
               ],
             ),
           ),
         ),
         const SizedBox(height: 18),
-        Text('TAMPILAN', style: CaloraText.section),
+        Text(tr('APPEARANCE'), style: CaloraText.section),
         const SizedBox(height: 12),
         SegmentedButton<ThemeMode>(
           showSelectedIcon: false,
-          segments: const [
-            ButtonSegment(value: ThemeMode.system, label: Text('Sistem'), icon: Icon(Icons.brightness_auto_outlined)),
-            ButtonSegment(value: ThemeMode.light, label: Text('Terang'), icon: Icon(Icons.light_mode_outlined)),
-            ButtonSegment(value: ThemeMode.dark, label: Text('Gelap'), icon: Icon(Icons.dark_mode_outlined)),
+          segments: [
+            ButtonSegment(value: ThemeMode.system, label: Text(tr('System')), icon: const Icon(Icons.brightness_auto_outlined)),
+            ButtonSegment(value: ThemeMode.light, label: Text(tr('Light theme')), icon: const Icon(Icons.light_mode_outlined)),
+            ButtonSegment(value: ThemeMode.dark, label: Text(tr('Dark theme')), icon: const Icon(Icons.dark_mode_outlined)),
           ],
           selected: {CaloraScope.of(context).themeMode},
           onSelectionChanged: (selection) => CaloraScope.of(context).setThemeMode(selection.first),
@@ -164,29 +165,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         const SizedBox(height: 18),
-        Text('PROFILE', style: CaloraText.section),
+        Text(tr('LANGUAGE'), style: CaloraText.section),
+        const SizedBox(height: 12),
+        SegmentedButton<String>(
+          showSelectedIcon: false,
+          segments: const [
+            ButtonSegment(value: 'id', label: Text('Indonesia')),
+            ButtonSegment(value: 'en', label: Text('English')),
+          ],
+          selected: {CaloraScope.of(context).language},
+          onSelectionChanged: (selection) => CaloraScope.of(context).setLanguage(selection.first),
+          style: SegmentedButton.styleFrom(
+            selectedBackgroundColor: CaloraColors.forest,
+            selectedForegroundColor: CaloraColors.onForest,
+            foregroundColor: CaloraColors.ink,
+            side: BorderSide(color: CaloraColors.sand),
+          ),
+        ),
+        const SizedBox(height: 18),
+        Text(tr('PROFILE'), style: CaloraText.section),
         const SizedBox(height: 12),
         CaloraCard(
           child: Column(
             children: [
-              _num(_bb, 'Weight kg'),
-              _num(_tb, 'Height cm'),
-              _num(_age, 'Age'),
-              _choice('Sex', _sex, const ['male', 'female'], (value) => setState(() => _sex = value)),
-              _choice('Activity', _activity, const ['sedentary', 'light', 'moderate', 'active'], (value) => setState(() => _activity = value)),
-              _choice('Goal', _goal, const ['lose', 'maintain', 'gain'], (value) => setState(() => _goal = value)),
-              _num(_target, 'Target weight kg'),
-              _num(_rate, 'Rate kg per week'),
+              _num(_bb, tr('Weight kg')),
+              _num(_tb, tr('Height cm')),
+              _num(_age, tr('Age')),
+              _choice(tr('Sex'), _sex, const ['male', 'female'], (value) => setState(() => _sex = value)),
+              _choice(tr('Activity'), _activity, const ['sedentary', 'light', 'moderate', 'active'], (value) => setState(() => _activity = value)),
+              _choice(tr('Goal'), _goal, const ['lose', 'maintain', 'gain'], (value) => setState(() => _goal = value)),
+              _num(_target, tr('Target weight kg')),
+              _num(_rate, tr('Rate kg per week')),
               _choice('Diet', _diet, const ['none', 'vegetarian', 'vegan', 'pescatarian'], (value) => setState(() => _diet = value)),
-              TextField(controller: _allergies, decoration: const InputDecoration(labelText: 'Allergies')),
+              TextField(controller: _allergies, decoration: InputDecoration(labelText: tr('Allergies'))),
               const SizedBox(height: 12),
-              TextField(controller: _disliked, decoration: const InputDecoration(labelText: 'Disliked foods')),
+              TextField(controller: _disliked, decoration: InputDecoration(labelText: tr('Disliked foods'))),
               if (_error != null) ...[
                 const SizedBox(height: 12),
                 Text(_error!, style: TextStyle(color: CaloraColors.danger)),
               ],
               const SizedBox(height: 12),
-              FilledButton(onPressed: _busy ? null : _save, child: const Text('Save profile')),
+              FilledButton(onPressed: _busy ? null : _save, child: Text(tr('Save profile'))),
             ],
           ),
         ),
@@ -196,10 +215,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             final updates = UpdateScope.maybeOf(context);
             if (updates != null) promptGithubUpdate(context, updates, force: true);
           },
-          child: const Text('Check for updates'),
+          child: Text(tr('Check for updates')),
         ),
         const SizedBox(height: 12),
-        OutlinedButton(onPressed: () => CaloraScope.of(context).logout(), child: const Text('Sign out')),
+        OutlinedButton(onPressed: () => CaloraScope.of(context).logout(), child: Text(tr('Sign out'))),
       ],
     );
   }
@@ -222,7 +241,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         key: ValueKey('$label-$value'),
         initialValue: options.contains(value) ? value : options.first,
         decoration: InputDecoration(labelText: label),
-        items: [for (final option in options) DropdownMenuItem(value: option, child: Text(option))],
+        items: [for (final option in options) DropdownMenuItem(value: option, child: Text(tr(option)))],
         onChanged: (next) {
           if (next != null) onChanged(next);
         },

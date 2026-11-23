@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../api/calora_client.dart';
 import '../app.dart';
 import '../theme/calora_theme.dart';
+import '../l10n.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -40,14 +41,14 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       await signIn();
     } on CaloraException catch (error) {
-      if (mounted) setState(() => _error = error.status == 401 ? 'Username atau password salah' : error.message);
+      if (mounted) setState(() => _error = error.status == 401 ? tr('Wrong username or password') : error.message);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
   }
 
   void _soon(String feature) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$feature belum tersedia')));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(tr('{feature} is not available yet', {'feature': tr(feature)}))));
   }
 
   @override
@@ -87,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [_Dash(CaloraColors.kiwi), _Dash(CaloraColors.sunshine), _Dash(CaloraColors.carrot)],
                     ),
                     const SizedBox(height: 28),
-                    const _Label('Email atau username'),
+                    _Label(tr('Email or username')),
                     TextField(
                       controller: _username,
                       keyboardType: TextInputType.emailAddress,
@@ -105,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: const TextStyle(fontSize: 17),
                       decoration: _field().copyWith(
                         suffixIcon: IconButton(
-                          tooltip: _showPassword ? 'Sembunyikan password' : 'Tampilkan password',
+                          tooltip: _showPassword ? tr('Hide password') : tr('Show password'),
                           onPressed: () => setState(() => _showPassword = !_showPassword),
                           icon: Icon(_showPassword ? Icons.visibility_off_outlined : Icons.visibility_outlined, color: CaloraColors.inkMuted),
                         ),
@@ -115,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () => _soon('Reset password'),
-                        child: const Text('Lupa Password?', style: TextStyle(fontWeight: FontWeight.w700)),
+                        child: Text(tr('Forgot password?'), style: const TextStyle(fontWeight: FontWeight.w700)),
                       ),
                     ),
                     if (_error != null)
@@ -130,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         textStyle: const TextStyle(fontFamily: CaloraText.body, fontSize: 17, fontWeight: FontWeight.w700),
                       ),
-                      child: Text(_busy ? 'Masuk…' : 'Masuk'),
+                      child: Text(_busy ? tr('Signing in…') : tr('Sign in')),
                     ),
                     const SizedBox(height: 14),
                     OutlinedButton(
@@ -142,11 +143,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         textStyle: const TextStyle(fontFamily: CaloraText.body, fontSize: 16, fontWeight: FontWeight.w600),
                       ),
-                      child: const Text('Continue as guest'),
+                      child: Text(tr('Continue as guest')),
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      'Login with Google coming soon',
+                      tr('Login with Google coming soon'),
                       textAlign: TextAlign.center,
                       style: TextStyle(color: CaloraColors.inkMuted),
                     ),

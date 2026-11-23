@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../app.dart';
 import '../theme/calora_theme.dart';
+import '../l10n.dart';
 
 class _Pack {
   const _Pack(this.id, this.name, this.title, this.kcal, this.weekly);
@@ -31,8 +32,8 @@ const _packs = [
 
 const _topups = [
   _Topup('t20', 20, 25000, 500000),
-  _Topup('t40', 40, 24000, 960000, list: 1000000, save: 40000, badge: 'Hemat 4%'),
-  _Topup('t60', 60, 23000, 1380000, list: 1500000, save: 120000, badge: 'Paling Hemat! Diskon 8%', best: true),
+  _Topup('t40', 40, 24000, 960000, list: 1000000, save: 40000, badge: 'Save 4%'),
+  _Topup('t60', 60, 23000, 1380000, list: 1500000, save: 120000, badge: 'Best value! 8% off', best: true),
 ];
 
 class CateringScreen extends StatefulWidget {
@@ -72,10 +73,7 @@ class _CateringScreenState extends State<CateringScreen> {
     return days < 0 ? 0 : days;
   }
 
-  String _date(DateTime value) {
-    const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-    return '${value.day} ${months[value.month - 1]} ${value.year}';
-  }
+  String _date(DateTime value) => longDate(value);
 
   String _rp(int value) {
     final raw = value.toString();
@@ -98,30 +96,30 @@ class _CateringScreenState extends State<CateringScreen> {
           builder: (context, setSheet) {
             final picked = _topups.firstWhere((item) => item.id == _topupId);
             return _sheet(
-              title: 'TOP UP TOKEN',
-              copy: 'Token dipakai untuk menukar paket menu mingguan. Paket lebih besar lebih hemat per token.',
+              title: tr('TOP UP TOKENS'),
+              copy: tr('Tokens are redeemed for weekly menu packages. Bigger packs cost less per token.'),
               children: [
                 for (final item in _topups)
                   _choice(
                     selected: item.id == _topupId,
                     best: item.best,
                     onTap: () => setSheet(() => _topupId = item.id),
-                    title: '${item.tokens} Token',
+                    title: tr('{n} Tokens', {'n': item.tokens}),
                     subtitle: '${_rp(item.unit)} / token',
-                    badge: item.badge,
+                    badge: item.badge == null ? null : tr(item.badge!),
                     badgeHot: item.best,
                     trailing: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         if (item.list != null) Text(_rp(item.list!), style: TextStyle(decoration: TextDecoration.lineThrough, color: CaloraColors.inkMuted, fontSize: 12)),
                         Text(_rp(item.total), style: const TextStyle(fontWeight: FontWeight.w700)),
-                        if (item.save != null) Text('Hemat ${_rp(item.save!)}', style: TextStyle(color: CaloraColors.kiwi, fontSize: 12, fontWeight: FontWeight.w600)),
+                        if (item.save != null) Text(tr('Save {price}', {'price': _rp(item.save!)}), style: TextStyle(color: CaloraColors.kiwi, fontSize: 12, fontWeight: FontWeight.w600)),
                       ],
                     ),
                   ),
-                _info('Saldo setelah top up: ${_balance + picked.tokens} Token. Metode bayar: QRIS.'),
+                _info(tr('Balance after top up: {n} Tokens. Payment method: QRIS.', {'n': _balance + picked.tokens})),
                 const SizedBox(height: 14),
-                _pay('Bayar ${_rp(picked.total)}', () {
+                _pay(tr('Pay {price}', {'price': _rp(picked.total)}), () {
                   CaloraScope.of(this.context).addTokens(picked.tokens);
                   Navigator.pop(context);
                 }),
@@ -149,10 +147,10 @@ class _CateringScreenState extends State<CateringScreen> {
             final short = after < 0;
             final next = _endsAt.add(Duration(days: _weeks * 7));
             return _sheet(
-              title: 'TUKARKAN TOKEN',
-              copy: 'Masa aktif saat ini sampai ${_date(_endsAt)}.',
+              title: tr('REDEEM TOKENS'),
+              copy: tr('Currently active until {date}.', {'date': _date(_endsAt)}),
               children: [
-                Text('PAKET', style: CaloraText.micro),
+                Text(tr('PACKAGE'), style: CaloraText.micro),
                 const SizedBox(height: 8),
                 for (final item in _packs)
                   _choice(
@@ -161,19 +159,19 @@ class _CateringScreenState extends State<CateringScreen> {
                       setSheet(() => _packageId = item.id);
                       setState(() {});
                     },
-                    title: '${item.name} · ${item.title}',
-                    subtitle: '${item.kcal} kcal rata-rata per meal',
-                    trailing: Text('${item.weekly} Token/mgg', style: const TextStyle(fontWeight: FontWeight.w700)),
+                    title: '${tr(item.name)} · ${tr(item.title)}',
+                    subtitle: tr('{n} kcal average per meal', {'n': item.kcal}),
+                    trailing: Text(tr('{n} Tokens/wk', {'n': item.weekly}), style: const TextStyle(fontWeight: FontWeight.w700)),
                   ),
                 const SizedBox(height: 6),
-                Text('DURASI', style: CaloraText.micro),
+                Text(tr('DURATION'), style: CaloraText.micro),
                 const SizedBox(height: 8),
                 for (final weeks in [1, 2, 4])
                   _choice(
                     selected: weeks == _weeks,
                     onTap: () => setSheet(() => _weeks = weeks),
-                    title: '$weeks minggu',
-                    trailing: Text('${pack.weekly * weeks} Token', style: const TextStyle(fontWeight: FontWeight.w700)),
+                    title: weeks == 1 ? tr('1 week') : tr('{n} weeks', {'n': weeks}),
+                    trailing: Text(tr('{n} Tokens', {'n': pack.weekly * weeks}), style: const TextStyle(fontWeight: FontWeight.w700)),
                   ),
                 Container(
                   margin: const EdgeInsets.only(top: 4),
@@ -181,9 +179,9 @@ class _CateringScreenState extends State<CateringScreen> {
                   decoration: BoxDecoration(color: CaloraColors.cream, borderRadius: BorderRadius.circular(16)),
                   child: Column(
                     children: [
-                      _line('Sisa Token Saat Ini', '$_balance Token'),
-                      _line('Token yang Dibutuhkan', '$cost Token'),
-                      _line('Sisa Setelah Transaksi', short ? 'Kurang ${after.abs()} Token' : '$after Token', warn: short),
+                      _line(tr('Current token balance'), tr('{n} Tokens', {'n': _balance})),
+                      _line(tr('Tokens needed'), tr('{n} Tokens', {'n': cost})),
+                      _line(tr('Balance after transaction'), short ? tr('{n} Tokens short', {'n': after.abs()}) : tr('{n} Tokens', {'n': after}), warn: short),
                     ],
                   ),
                 ),
@@ -200,7 +198,7 @@ class _CateringScreenState extends State<CateringScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Dikirim ke · Rumah', style: TextStyle(fontWeight: FontWeight.w700)),
+                            Text(tr('Delivered to · Home'), style: TextStyle(fontWeight: FontWeight.w700)),
                             Text('Jl. Sudirman No. 45, Jakarta Selatan'),
                           ],
                         ),
@@ -208,9 +206,11 @@ class _CateringScreenState extends State<CateringScreen> {
                     ],
                   ),
                 ),
-                _info('Langganan baru berakhir pada ${_date(next)}. Alamat diubah di Other. ${short ? 'Token belum cukup, Anda akan diarahkan ke Top Up.' : 'Token cukup untuk penukaran ini.'}'),
+                _info(short
+                    ? tr('The new subscription ends on {date}. Change the address under Other. Not enough tokens; you will be taken to Top Up.', {'date': _date(next)})
+                    : tr('The new subscription ends on {date}. Change the address under Other. You have enough tokens for this.', {'date': _date(next)})),
                 const SizedBox(height: 14),
-                _pay('Tukarkan $cost Token', () {
+                _pay(tr('Redeem {n} Tokens', {'n': cost}), () {
                   Navigator.pop(context);
                   if (short) {
                     _openTopup();
@@ -235,9 +235,9 @@ class _CateringScreenState extends State<CateringScreen> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 120),
       children: [
-        Text('CATERING', style: CaloraText.title),
+        Text(tr('CATERING'), style: CaloraText.title),
         const SizedBox(height: 4),
-        Text('Tukar token dengan paket menu mingguan', style: TextStyle(color: CaloraColors.inkMuted)),
+        Text(tr('Swap tokens for weekly menu packages'), style: TextStyle(color: CaloraColors.inkMuted)),
         const SizedBox(height: 16),
         _darkCard(
           child: Row(
@@ -246,7 +246,7 @@ class _CateringScreenState extends State<CateringScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('SISA TOKEN SAYA', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 0.8)),
+                    Text(tr('MY TOKEN BALANCE'), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 0.8)),
                     const SizedBox(height: 8),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -261,11 +261,11 @@ class _CateringScreenState extends State<CateringScreen> {
                         const SizedBox(width: 8),
                         Text('$_balance', style: CaloraText.stat(44).copyWith(color: CaloraColors.onForest)),
                         const SizedBox(width: 6),
-                        const Text('Token', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                        Text(tr('Tokens'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                       ],
                     ),
                     const SizedBox(height: 4),
-                    Text('Paket 7 hari mulai 40 Token', style: TextStyle(color: CaloraColors.onForest.withValues(alpha: 0.8), fontSize: 13)),
+                    Text(tr('7-day packages from 40 Tokens'), style: TextStyle(color: CaloraColors.onForest.withValues(alpha: 0.8), fontSize: 13)),
                   ],
                 ),
               ),
@@ -282,28 +282,28 @@ class _CateringScreenState extends State<CateringScreen> {
                 children: [
                   Container(width: 8, height: 8, decoration: BoxDecoration(color: CaloraColors.kiwi, shape: BoxShape.circle)),
                   const SizedBox(width: 8),
-                  Text(left > 0 ? 'LANGGANAN AKTIF' : 'LANGGANAN BERAKHIR', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 0.8)),
+                  Text(left > 0 ? tr('ACTIVE SUBSCRIPTION') : tr('SUBSCRIPTION ENDED'), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 0.8)),
                 ],
               ),
               const SizedBox(height: 14),
-              const Text('Berakhir pada', style: TextStyle(fontSize: 13)),
+              Text(tr('Ends on'), style: const TextStyle(fontSize: 13)),
               Text(_date(_endsAt).toUpperCase(), style: CaloraText.stat(32).copyWith(color: CaloraColors.onForest)),
               const SizedBox(height: 12),
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  _pill('${pack.name} · ${pack.title}'),
-                  _pill('Sisa $left hari'),
+                  _pill('${tr(pack.name)} · ${tr(pack.title)}'),
+                  _pill(tr('{n} days left', {'n': left})),
                 ],
               ),
               const SizedBox(height: 16),
-              SizedBox(width: double.infinity, child: FilledButton(onPressed: _openRedeem, child: Text('Tukarkan ${pack.weekly} Token'))),
+              SizedBox(width: double.infinity, child: FilledButton(onPressed: _openRedeem, child: Text(tr('Redeem {n} Tokens', {'n': pack.weekly})))),
             ],
           ),
         ),
         const SizedBox(height: 18),
-        Text('KATALOG PAKET 7 HARI', style: CaloraText.section),
+        Text(tr('7-DAY PACKAGE CATALOG'), style: CaloraText.section),
         const SizedBox(height: 10),
         Row(
           children: [
@@ -321,11 +321,11 @@ class _CateringScreenState extends State<CateringScreen> {
                     ),
                     child: Column(
                       children: [
-                        Text(item.name.toUpperCase(), textAlign: TextAlign.center, style: TextStyle(fontFamily: CaloraText.display, fontWeight: FontWeight.w700, color: item.id == _packageId ? CaloraColors.onForest : CaloraColors.heading)),
+                        Text(tr(item.name).toUpperCase(), textAlign: TextAlign.center, style: TextStyle(fontFamily: CaloraText.display, fontWeight: FontWeight.w700, color: item.id == _packageId ? CaloraColors.onForest : CaloraColors.heading)),
                         const SizedBox(height: 4),
-                        Text(item.title, textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: item.id == _packageId ? CaloraColors.onForest : CaloraColors.inkMuted)),
+                        Text(tr(item.title), textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: item.id == _packageId ? CaloraColors.onForest : CaloraColors.inkMuted)),
                         const SizedBox(height: 6),
-                        Text('${item.weekly} Token', style: TextStyle(fontWeight: FontWeight.w700, color: item.id == _packageId ? CaloraColors.onForest : CaloraColors.ink)),
+                        Text(tr('{n} Tokens', {'n': item.weekly}), style: TextStyle(fontWeight: FontWeight.w700, color: item.id == _packageId ? CaloraColors.onForest : CaloraColors.ink)),
                       ],
                     ),
                   ),
@@ -336,7 +336,7 @@ class _CateringScreenState extends State<CateringScreen> {
           ],
         ),
         const SizedBox(height: 22),
-        Text('MENU YANG TERSEDIA', style: CaloraText.section),
+        Text(tr('AVAILABLE MENUS'), style: CaloraText.section),
         const SizedBox(height: 10),
         ..._menuList(),
       ],
@@ -345,9 +345,8 @@ class _CateringScreenState extends State<CateringScreen> {
 
   List<Widget> _menuList() {
     final menus = CaloraScope.of(context).menus;
-    if (menus == null) return [Text('Memuat menu…', style: TextStyle(color: CaloraColors.inkMuted))];
-    if (menus.isEmpty) return [Text('Belum ada menu aktif.', style: TextStyle(color: CaloraColors.inkMuted))];
-    const mealLabels = {'BREAKFAST': 'SARAPAN', 'LUNCH': 'MAKAN SIANG', 'DINNER': 'MAKAN MALAM', 'SNACK': 'CAMILAN'};
+    if (menus == null) return [Text(tr('Loading menus…'), style: TextStyle(color: CaloraColors.inkMuted))];
+    if (menus.isEmpty) return [Text(tr('No active menus yet.'), style: TextStyle(color: CaloraColors.inkMuted))];
     return [
       for (final menu in menus)
         Container(
@@ -366,7 +365,7 @@ class _CateringScreenState extends State<CateringScreen> {
                 children: [
                   Expanded(
                     child: Text(
-                      mealLabels[menu.mealType] ?? menu.mealType,
+                      tr(menu.mealType),
                       style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.8, color: CaloraColors.heading),
                     ),
                   ),
@@ -381,8 +380,8 @@ class _CateringScreenState extends State<CateringScreen> {
                 runSpacing: 6,
                 children: [
                   _macroChip('Protein ${menu.proteinG.round()}g'),
-                  _macroChip('Karbo ${menu.carbsG.round()}g'),
-                  _macroChip('Lemak ${menu.fatG.round()}g'),
+                  _macroChip(tr('Carbs {n}g', {'n': menu.carbsG.round()})),
+                  _macroChip(tr('Fat {n}g', {'n': menu.fatG.round()})),
                 ],
               ),
             ],
@@ -506,7 +505,7 @@ Widget _choice({
               decoration: BoxDecoration(color: CaloraColors.carrot, borderRadius: BorderRadius.all(Radius.circular(8))),
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                child: Text('BEST VALUE', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 0.6)),
+                child: Text(tr('BEST VALUE'), style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 0.6)),
               ),
             ),
           ),
@@ -543,5 +542,5 @@ Widget _pay(String label, VoidCallback onPressed) {
 }
 
 Widget _cancel(BuildContext context) {
-  return SizedBox(width: double.infinity, child: OutlinedButton(onPressed: () => Navigator.pop(context), child: const Text('Batal')));
+  return SizedBox(width: double.infinity, child: OutlinedButton(onPressed: () => Navigator.pop(context), child: Text(tr('Cancel'))));
 }

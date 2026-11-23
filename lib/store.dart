@@ -3,13 +3,15 @@ import 'package:flutter/foundation.dart';
 
 import 'api/calora_client.dart';
 import 'api/models.dart';
+import 'l10n.dart';
 import 'theme/theme_prefs.dart';
 
 class CaloraStore extends ChangeNotifier {
-  CaloraStore(this.client, {this.themePrefs});
+  CaloraStore(this.client, {this.themePrefs, this.languagePrefs});
 
   final CaloraClient client;
   final ThemePrefs? themePrefs;
+  final LanguagePrefs? languagePrefs;
   bool ready = false;
   bool signedIn = false;
   CaloraUser? user;
@@ -26,6 +28,23 @@ class CaloraStore extends ChangeNotifier {
     notifyListeners();
     try {
       await themePrefs?.write(mode.name);
+    } catch (_) {}
+  }
+
+  /// 'id' or 'en'; mirrored into [AppLanguage.code] for [tr].
+  String get language => AppLanguage.code;
+
+  Future<void> setLanguage(String code) async {
+    AppLanguage.code = code == 'en' ? 'en' : 'id';
+    notifyListeners();
+    try {
+      await languagePrefs?.write(AppLanguage.code);
+    } catch (_) {}
+  }
+
+  Future<void> _loadLanguage() async {
+    try {
+      AppLanguage.code = await languagePrefs?.read() == 'en' ? 'en' : 'id';
     } catch (_) {}
   }
 
@@ -61,6 +80,7 @@ class CaloraStore extends ChangeNotifier {
 
   Future<void> bootstrap() async {
     await _loadThemeMode();
+    await _loadLanguage();
     try {
       user = await client.current();
       signedIn = user != null;

@@ -5,6 +5,7 @@ import '../app.dart';
 import '../format.dart';
 import '../theme/calora_theme.dart';
 import '../widgets/calora_card.dart';
+import '../l10n.dart';
 
 class WorkoutScreen extends StatefulWidget {
   const WorkoutScreen({super.key});
@@ -32,7 +33,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   Future<void> _saveSession() async {
     final minutes = int.tryParse(_minutes.text);
     if (minutes == null || minutes < 0) {
-      _toast('Enter the session length in minutes');
+      _toast(tr('Enter the session length in minutes'));
       return;
     }
     await _send({
@@ -48,16 +49,20 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   Future<void> _saveSet() async {
     final name = _exercise.text.trim();
     if (name.isEmpty) {
-      _toast('Enter an exercise name');
+      _toast(tr('Enter an exercise name'));
       return;
     }
     final kg = _kg.text.trim();
     final reps = _reps.text.trim();
     final label = [name, if (kg.isNotEmpty) '${kg}kg', if (reps.isNotEmpty) '× $reps'].join(kg.isNotEmpty && reps.isNotEmpty ? ' · ' : ' ');
     final composed = kg.isNotEmpty && reps.isNotEmpty ? '$name · ${kg}kg × $reps' : label;
+    final weightKg = double.tryParse(kg);
+    final repCount = int.tryParse(reps);
     await _send({
       'activityType': 'STRENGTH',
       'name': composed,
+      'weightKg': ?weightKg,
+      'reps': ?repCount,
       'startedAt': DateTime.now().toUtc().toIso8601String(),
       'dataQuality': 'USER_REPORTED',
     });
@@ -101,17 +106,17 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
         children: [
-          Text('WORKOUT', style: CaloraText.title),
+          Text(tr('WORKOUT'), style: CaloraText.title),
           const SizedBox(height: 12),
           CaloraCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text('SESSION', style: CaloraText.section),
+                Text(tr('SESSION'), style: CaloraText.section),
                 const SizedBox(height: 8),
-                TextField(controller: _minutes, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'Minutes')),
+                TextField(controller: _minutes, keyboardType: TextInputType.number, decoration: InputDecoration(labelText: tr('Minutes'))),
                 const SizedBox(height: 12),
-                FilledButton(onPressed: _busy ? null : _saveSession, child: const Text('Save session')),
+                FilledButton(onPressed: _busy ? null : _saveSession, child: Text(tr('Save session'))),
               ],
             ),
           ),
@@ -120,15 +125,15 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text('EXERCISE', style: CaloraText.section),
+                Text(tr('EXERCISE'), style: CaloraText.section),
                 const SizedBox(height: 8),
-                TextField(controller: _exercise, decoration: const InputDecoration(labelText: 'Name')),
+                TextField(controller: _exercise, decoration: InputDecoration(labelText: tr('Name'))),
                 const SizedBox(height: 12),
-                TextField(controller: _kg, keyboardType: const TextInputType.numberWithOptions(decimal: true), decoration: const InputDecoration(labelText: 'Weight kg')),
+                TextField(controller: _kg, keyboardType: const TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: tr('Weight kg'))),
                 const SizedBox(height: 12),
-                TextField(controller: _reps, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'Reps')),
+                TextField(controller: _reps, keyboardType: TextInputType.number, decoration: InputDecoration(labelText: tr('Reps'))),
                 const SizedBox(height: 12),
-                FilledButton(onPressed: _busy ? null : _saveSet, child: const Text('Save exercise')),
+                FilledButton(onPressed: _busy ? null : _saveSet, child: Text(tr('Save exercise'))),
               ],
             ),
           ),
@@ -144,9 +149,9 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                         Text(activity.name, style: const TextStyle(fontWeight: FontWeight.w700)),
                         Text(
                           [
-                            activity.activityType,
+                            tr(activity.activityType),
                             formatWhen(activity.startedAt),
-                            if (activity.durationSeconds != null) '${(activity.durationSeconds! / 60).round()} min',
+                            if (activity.durationSeconds != null) tr('{n} min', {'n': (activity.durationSeconds! / 60).round()}),
                           ].join(' · '),
                           style: TextStyle(color: CaloraColors.inkMuted),
                         ),

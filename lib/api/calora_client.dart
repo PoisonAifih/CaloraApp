@@ -6,6 +6,7 @@ import 'package:http_parser/http_parser.dart';
 
 import '../session.dart';
 import 'models.dart';
+import '../l10n.dart';
 
 const apiBaseUrl = String.fromEnvironment('API_BASE_URL', defaultValue: 'https://poisonaifih.tail5d3722.ts.net/calora');
 
@@ -39,7 +40,7 @@ class CaloraClient {
     final json = await _json('POST', path, body: body);
     final token = json['sessionToken'];
     if (token is! String || token.isEmpty) {
-      throw CaloraException(500, 'Sign in did not return a session');
+      throw CaloraException(500, tr('Sign in did not return a session'));
     }
     await session.write(token);
     return CaloraUser.fromJson(_map(json['user']));
@@ -65,7 +66,7 @@ class CaloraClient {
 
   Future<List<CateringMenu>> menus() async {
     final decoded = await _decodeAny(await _send('GET', '/api/menus'));
-    if (decoded is! List) throw CaloraException(500, 'Unexpected response');
+    if (decoded is! List) throw CaloraException(500, tr('Unexpected response'));
     return decoded.whereType<Map<String, dynamic>>().map(CateringMenu.fromJson).toList();
   }
 
@@ -101,10 +102,10 @@ class CaloraClient {
     final file = File(path);
     final length = await file.length();
     if (length > 5 * 1024 * 1024) {
-      throw CaloraException(400, 'Image must be 5 MB or smaller');
+      throw CaloraException(400, tr('Image must be 5 MB or smaller'));
     }
     final subtype = _imageSubtype(path);
-    if (subtype == null) throw CaloraException(400, 'Use a JPEG, PNG, or WebP photo');
+    if (subtype == null) throw CaloraException(400, tr('Use a JPEG, PNG, or WebP photo'));
     final request = http.MultipartRequest('POST', Uri.parse('$baseUrl/api/analyze'));
     final token = await session.read();
     if (token != null) request.headers['Cookie'] = 'calora_session=$token';
@@ -142,7 +143,7 @@ class CaloraClient {
   Future<Map<String, dynamic>> _decode(http.Response response) async {
     final decoded = await _decodeAny(response);
     if (decoded is Map<String, dynamic>) return decoded;
-    throw CaloraException(response.statusCode, 'Unexpected response');
+    throw CaloraException(response.statusCode, tr('Unexpected response'));
   }
 
   Future<dynamic> _decodeAny(http.Response response) async {
@@ -160,9 +161,9 @@ class CaloraClient {
   String _message(http.Response response) {
     try {
       final decoded = jsonDecode(response.body);
-      if (decoded is Map && decoded['error'] is String) return decoded['error'] as String;
+      if (decoded is Map && decoded['error'] is String) return tr(decoded['error'] as String);
     } catch (_) {}
-    return 'Request failed';
+    return tr('Request failed');
   }
 }
 

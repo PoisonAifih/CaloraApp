@@ -6,6 +6,7 @@ import '../format.dart';
 import '../theme/calora_theme.dart';
 import '../widgets/calora_card.dart';
 import '../widgets/weight_chart.dart';
+import '../l10n.dart';
 
 class TrendsScreen extends StatefulWidget {
   const TrendsScreen({super.key});
@@ -27,7 +28,7 @@ class _TrendsScreenState extends State<TrendsScreen> {
   Future<void> _save() async {
     final kg = double.tryParse(_weight.text);
     if (kg == null || kg < 30 || kg > 350) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Weight must be between 30 and 350 kg')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(tr('Weight must be between 30 and 350 kg'))));
       return;
     }
     setState(() => _busy = true);
@@ -57,7 +58,7 @@ class _TrendsScreenState extends State<TrendsScreen> {
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
         children: [
-          Text('TRENDS', style: CaloraText.title),
+          Text(tr('TRENDS'), style: CaloraText.title),
           const SizedBox(height: 12),
           CaloraCard(
             child: Column(
@@ -66,10 +67,10 @@ class _TrendsScreenState extends State<TrendsScreen> {
                 TextField(
                   controller: _weight,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(labelText: 'Weight kg'),
+                  decoration: InputDecoration(labelText: tr('Weight kg')),
                 ),
                 const SizedBox(height: 12),
-                FilledButton(onPressed: _busy ? null : _save, child: const Text('Save weight')),
+                FilledButton(onPressed: _busy ? null : _save, child: Text(tr('Save weight'))),
               ],
             ),
           ),
@@ -78,13 +79,13 @@ class _TrendsScreenState extends State<TrendsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(trend == null ? 'Not enough weigh-ins for a trend' : '${trend > 0 ? '+' : ''}${trend.toStringAsFixed(2)} kg / week', style: trend == null ? TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: CaloraColors.heading) : CaloraText.stat(26)),
+                Text(trend == null ? tr('Not enough weigh-ins for a trend') : tr('{n} kg / week', {'n': '${trend > 0 ? '+' : ''}${trend.toStringAsFixed(2)}'}), style: trend == null ? TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: CaloraColors.heading) : CaloraText.stat(26)),
                 const SizedBox(height: 8),
                 WeightChart(weights: weights),
-                Text('Average ${roundNum(dash?.averageCalories ?? 0)} kcal · protein ${roundNum(dash?.averageProtein ?? 0)} g'),
-                Text('Logged ${dash?.daysLogged ?? 0} of ${dash?.windowDays ?? 7} days · confidence ${dash?.confidence ?? 'LOW'}'),
-                Text('Activity energy ${roundNum(dash?.activityEnergyAverage ?? 0)} kcal/day', style: TextStyle(color: CaloraColors.inkMuted)),
-                Text('Logging completeness ${(((dash?.loggingCompleteness ?? 0) * 100).round())}%', style: TextStyle(color: CaloraColors.inkMuted)),
+                Text(tr('Average {kcal} kcal · protein {protein} g', {'kcal': roundNum(dash?.averageCalories ?? 0), 'protein': roundNum(dash?.averageProtein ?? 0)})),
+                Text(tr('Logged {a} of {b} days · confidence {c}', {'a': dash?.daysLogged ?? 0, 'b': dash?.windowDays ?? 7, 'c': tr(dash?.confidence ?? 'LOW')})),
+                Text(tr('Activity energy {n} kcal/day', {'n': roundNum(dash?.activityEnergyAverage ?? 0)}), style: TextStyle(color: CaloraColors.inkMuted)),
+                Text(tr('Logging completeness {n}%', {'n': ((dash?.loggingCompleteness ?? 0) * 100).round()}), style: TextStyle(color: CaloraColors.inkMuted)),
               ],
             ),
           ),

@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../theme/calora_theme.dart';
 import 'github_update.dart';
 import 'version.dart';
+import '../l10n.dart';
 
 class UpdateScope extends InheritedWidget {
   const UpdateScope({required this.client, required super.child, super.key});
@@ -58,16 +59,16 @@ Future<void> promptGithubUpdate(BuildContext context, GithubUpdateClient client,
     final install = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Update available'),
-        content: Text('Version ${release.tag} is on GitHub. Install it now?'),
+        title: Text(tr('Update available')),
+        content: Text(tr('Version {tag} is on GitHub. Install it now?', {'tag': release.tag})),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Later'),
+            child: Text(tr('Later')),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Install'),
+            child: Text(tr('Install')),
           ),
         ],
       ),
@@ -94,7 +95,7 @@ Future<void> _downloadAndInstall(BuildContext context, GithubUpdateClient client
         children: [
           CircularProgressIndicator(color: CaloraColors.accent),
           SizedBox(width: 16),
-          Expanded(child: Text('Downloading update')),
+          Expanded(child: Text(tr('Downloading update'))),
         ],
       ),
     ),

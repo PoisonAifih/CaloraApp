@@ -5,6 +5,7 @@ import '../app.dart';
 import '../theme/calora_theme.dart';
 import '../widgets/calorie_ring.dart';
 import '../widgets/calora_card.dart';
+import '../l10n.dart';
 
 String _thousands(num value) {
   final raw = value.round().abs().toString();
@@ -22,12 +23,7 @@ String _initials(String name) {
   return (parts[0][0] + (parts.length > 1 ? parts[1][0] : '')).toUpperCase();
 }
 
-String _tomorrowLabel() {
-  const days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-  final date = DateTime.now().add(const Duration(days: 1));
-  return '${days[date.weekday - 1]}, ${date.day} ${months[date.month - 1]}';
-}
+String _tomorrowLabel() => weekdayDate(DateTime.now().add(const Duration(days: 1)));
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({required this.onProfile, required this.onCatering, super.key});
@@ -65,12 +61,12 @@ class HomeScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      firstName.isEmpty ? 'Halo 👋' : 'Halo, $firstName 👋',
+                      firstName.isEmpty ? tr('Hello 👋') : tr('Hello, {name} 👋', {'name': firstName}),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: CaloraColors.heading),
                     ),
-                    Text('Semangat menjaga nutrisimu hari ini!', style: TextStyle(fontSize: 13, color: CaloraColors.inkMuted)),
+                    Text(tr('Keep your nutrition on track today!'), style: TextStyle(fontSize: 13, color: CaloraColors.inkMuted)),
                   ],
                 ),
               ),
@@ -104,8 +100,8 @@ class HomeScreen extends StatelessWidget {
                 shape: CircleBorder(side: BorderSide(color: CaloraColors.sand)),
                 color: Colors.transparent,
                 child: IconButton(
-                  tooltip: 'Notifikasi',
-                  onPressed: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Belum ada notifikasi'))),
+                  tooltip: tr('Notifications'),
+                  onPressed: () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(tr('No notifications yet')))),
                   icon: Icon(Icons.notifications_none, color: CaloraColors.ink),
                 ),
               ),
@@ -113,11 +109,11 @@ class HomeScreen extends StatelessWidget {
           ),
           const SizedBox(height: 22),
           if (dash == null)
-            const CaloraCard(child: Text('Tarik ke bawah untuk memuat data hari ini.'))
+            CaloraCard(child: Text(tr("Pull down to load today's data.")))
           else ...[
             _energy(dash),
             const SizedBox(height: 30),
-            Text('STATUS KATERING BESOK', style: CaloraText.section),
+            Text(tr("TOMORROW'S CATERING STATUS"), style: CaloraText.section),
             const SizedBox(height: 14),
             _catering(dash),
           ],
@@ -155,7 +151,7 @@ class HomeScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Sisa kalori', style: TextStyle(fontSize: 14, color: CaloraColors.inkMuted)),
+                    Text(tr('Calories left'), style: TextStyle(fontSize: 14, color: CaloraColors.inkMuted)),
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       alignment: Alignment.centerLeft,
@@ -174,7 +170,7 @@ class HomeScreen extends StatelessWidget {
                           Icon(over ? Icons.warning_amber_rounded : Icons.check, size: 16, color: over ? CaloraColors.tomato : CaloraColors.heading),
                           const SizedBox(width: 6),
                           Text(
-                            over ? 'kcal berlebih' : 'kcal tersisa',
+                            over ? tr('kcal over') : tr('kcal left'),
                             style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: over ? CaloraColors.tomato : CaloraColors.heading),
                           ),
                         ],
@@ -188,22 +184,26 @@ class HomeScreen extends StatelessWidget {
           const SizedBox(height: 22),
           _macro('Protein', dash.consumedProtein, dash.targetProtein, CaloraColors.protein),
           const SizedBox(height: 16),
-          _macro('Karbohidrat', dash.consumedCarbs, dash.targetCarbs, CaloraColors.carbs),
+          _macro(tr('Carbs'), dash.consumedCarbs, dash.targetCarbs, CaloraColors.carbs),
           const SizedBox(height: 16),
-          _macro('Lemak', dash.consumedFat, dash.targetFat, CaloraColors.fat),
+          _macro(tr('Fat'), dash.consumedFat, dash.targetFat, CaloraColors.fat),
+          const SizedBox(height: 16),
+          _macro(tr('Sugar'), dash.consumedSugar, dash.maxSugar, CaloraColors.tomato),
+          const SizedBox(height: 16),
+          _macro(tr('Sodium'), dash.consumedSodium, dash.maxSodium, CaloraColors.mutedGreen, unit: 'mg'),
         ],
       ),
     );
   }
 
-  Widget _macro(String label, double value, double target, Color color) {
+  Widget _macro(String label, double value, double target, Color color, {String unit = 'g'}) {
     final fraction = target <= 0 ? 0.0 : (value / target).clamp(0.0, 1.0);
     return Column(
       children: [
         Row(
           children: [
             Expanded(child: Text(label, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
-            Text('${value.round()}g / ${target.round()}g', style: TextStyle(fontSize: 14, color: CaloraColors.inkMuted)),
+            Text('${value.round()}$unit / ${target.round()}$unit', style: TextStyle(fontSize: 14, color: CaloraColors.inkMuted)),
           ],
         ),
         const SizedBox(height: 8),
@@ -231,7 +231,7 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     Icon(Icons.inventory_2_outlined, size: 15, color: CaloraColors.onForest),
                     SizedBox(width: 6),
-                    Text('MENU BESOK', style: TextStyle(fontFamily: CaloraText.display, fontSize: 14, fontWeight: FontWeight.w700, letterSpacing: 0.8, color: CaloraColors.onForest)),
+                    Text(tr("TOMORROW'S MENU"), style: TextStyle(fontFamily: CaloraText.display, fontSize: 14, fontWeight: FontWeight.w700, letterSpacing: 0.8, color: CaloraColors.onForest)),
                   ],
                 ),
               ),
@@ -240,16 +240,16 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 14),
-          Text(lunch?.name ?? 'Belum ada menu', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+          Text(lunch?.name ?? tr('No menu yet'), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
           const SizedBox(height: 4),
           if (lunch == null)
-            Text('Menu besok muncul setelah paket catering aktif.', style: TextStyle(fontSize: 15, color: CaloraColors.inkMuted))
+            Text(tr("Tomorrow's menu appears once a catering package is active."), style: TextStyle(fontSize: 15, color: CaloraColors.inkMuted))
           else ...[
             Text.rich(
               TextSpan(
                 style: TextStyle(fontSize: 15, color: CaloraColors.inkMuted),
                 children: [
-                  const TextSpan(text: 'Makan siang · '),
+                  TextSpan(text: tr('Lunch · ')),
                   TextSpan(text: '${_thousands(lunch.calories)} kcal', style: TextStyle(fontWeight: FontWeight.w700, color: CaloraColors.ink)),
                 ],
               ),
@@ -260,8 +260,8 @@ class HomeScreen extends StatelessWidget {
               runSpacing: 8,
               children: [
                 _chip('Protein ${lunch.proteinG.round()}g'),
-                _chip('Karbo ${lunch.carbsG.round()}g'),
-                _chip('Lemak ${lunch.fatG.round()}g'),
+                _chip(tr('Carbs {n}g', {'n': lunch.carbsG.round()})),
+                _chip(tr('Fat {n}g', {'n': lunch.fatG.round()})),
               ],
             ),
           ],
